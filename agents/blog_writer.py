@@ -25,12 +25,18 @@ prompt_generator = PromptGenerator(
     instructions=Instructions(
         instructions=[
             "read the draft and outline carefully, then rewrite it as in the provided message",
-            "always respect the sources, citation is needed"
+            "use outline as a skeleton of your respond, adjust it only when it's neccessary",
+            # "some sentences or paragraphs may be synthesized or summarized from multiple sources, always include the sources in the citations",
+            "some sentences or paragraphs may be synthesized or summarized from multiple sources, always include and combine the sources in the citations",
+            "always respect the sources, citation is needed",
         ],
         cautions=[
             "do not make up any information",
             "do cite the sources and keep the sources at the end as the reference section",
-            "do not leave any citation out of the reference section"
+            "do not leave any citation out of the reference section",
+            "do not mix up citations with others",
+            "always write intext-citation with the same [number] as in the reference section",
+            "always write a reference section as follows: References:\n- [number] source1\n- [number] source2\n- [number] source3"
         ]
     ),
     fallback=None
