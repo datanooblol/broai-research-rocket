@@ -1,0 +1,11 @@
+[project]
+name = "broai-research-rocket"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "broai==0.1.12",
+    "streamlit>=1.45.0",
+    "torch==2.6.0",
+]
