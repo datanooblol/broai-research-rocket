@@ -7,7 +7,7 @@ from typing import Tuple, List, Dict, Any, Optional
 # you can use any model sharing the same methods: .run, .SystemMessage, .UserMessage, .AIMessage
 from broai.llm_management.ollama import BedrockOllamaChat
 bedrock_model = BedrockOllamaChat(
-    model_name="us.meta.llama3-2-11b-instruct-v1:0",
+    model_name="us.meta.llama3-3-70b-instruct-v1:0",
     temperature=0,
 )
 
@@ -24,10 +24,18 @@ prompt_generator = PromptGenerator(
         instructions=[
             "carefully read the message and context to understand what to do and how to respond",
             "respond faithfully based on the given message",
-            "always respond based on the provided context"
+            "always respond based on the provided context",
+            "some sentences or paragraphs may be synthesized or summarized from multiple sources, always include and combine the sources in the citations",
+            "always respect the sources, citation is needed",
         ],
         cautions=[
-            "do not make up your response."
+            "do not make up your response.",
+            "do not make up any information",
+            "do cite the sources and keep the sources at the end as the reference section",
+            "do not leave any citation out of the reference section",
+            "do not mix up citations with others",
+            "always write intext-citation with the same [number] as in the reference section",
+            "always write a reference section as follows: References:\n- [number] source1\n- [number] source2\n- [number] source3"
         ]
     ),
 )

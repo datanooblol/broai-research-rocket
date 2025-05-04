@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "broai==0.1.12",
+    "broai==0.1.13",
     "fastapi>=0.115.12",
     "python-dotenv>=1.1.0",
     "streamlit>=1.45.0",
