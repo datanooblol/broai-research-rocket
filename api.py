@@ -1,24 +1,21 @@
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from package.interfaces.session_record import SessionRecord
-from package.lib.parse_outline import parse_outline
+from package.routers.v1.session.endpoint import router as SessionEndpoint
+from package.routers.v1.user.endpoint import router as UserEndpoint
+from package.database.user import UserDB
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # take environment variables
+
+userDB = UserDB(db_name=os.getenv("DB_NAME"))
 
 app = FastAPI()
+for endpoint in [
+    SessionEndpoint,
+    UserEndpoint
+]:
+    app.include_router(endpoint)
 
 @app.get("/")
 def health():
-    return {"message": "alive"}
-
-@app.post("/start-session")
-def start_session(session:SessionRecord):
-    """
-    Steps:
-        - convert outline, save in session_memory: id, tone_of_voice, outline, retrieved_json, summarized_json, publish
-        - enrich outline (optional)
-        - search with searxng
-        - register web
-        - scrape web
-        - summarize
-        - publish
-    """
-    return {"response": parse_outline(session.outline)}
+    return {"response": "alive"}

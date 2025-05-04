@@ -1,6 +1,7 @@
 import streamlit as st
 from package.lib.parse_outline import parse_outline
 from package.interfaces.sections import Sections
+from package.components.navbar import navbar
 
 st.set_page_config(
     page_title="Home",
@@ -31,3 +32,11 @@ if 'outline' not in st.session_state:
 - how many types of insurance frauds are  
 - how to detect insurance fraud  
 """.strip()
+
+navbar()
+# def navbar():
+#     st.page_link("./pages/1_workspace.py", label="Workspace", icon="🏠")
+#     st.page_link("./pages/2_outline.py", label="Outline", icon="🏠")
+#     st.page_link("./pages/3_chunks.py", label="Chunks", icon="🏠")
+#     st.page_link("./pages/4_summary.py", label="Summary", icon="🏠")
+#     st.page_link("./pages/5_publish.py", label="Publish", icon="🏠")
