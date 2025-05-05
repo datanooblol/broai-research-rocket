@@ -1,0 +1,69 @@
+from agents.context_compressor import ContextCompressor
+from package.database.session.model import Knowledge
+from package.database.session.model import (
+    EnrichQuestion, EnrichSection, Enrich, SessionEnrich
+)
+from package.database.session.model import SessionStep
+import json
+
+
+class EnrichService:
+    def __init__(self, sessionDB, knowledgeDB):
+        self.sessionDB = sessionDB
+        self.knowledgeDB = knowledgeDB
+
+    def pack_context(self, contexts):
+        source_list = []
+        context_dict = {}
+        for c in contexts:
+            source = c.metadata.copy().get("source", "")
+            context = c.context
+            if source not in source_list:
+                context_dict[source] = [context]
+                source_list.append(source)
+            else:
+                context_dict[source].append(context)
+        prompt = []
+        for s, c in context_dict.items():
+            # print(s)
+            context_str = "\n".join(c)
+            prompt.append(
+                f"SOURCE: {s}\n{context_str}"
+            )
+        return "\n\n".join(prompt)
+
+    def enrich(self, session_id: str):
+        context_compressor = ContextCompressor()
+        """get parsed_outline and retrieved_contexts, enrich, update enrich, return enriched_contexts"""
+        sections = Knowledge(**json.loads(
+            self.sessionDB.get_session(session_id).to_dict(orient="records")[0].get("knowledge")
+        ))
+        section_list = []
+        for section in sections.sections:
+            _section = section.section
+            _questions = section.questions
+            enriched_question_list = []
+            for _question in _questions:
+                question = _question.question
+                retrieved_ids = _question.retrieved_ids
+                ret_contexts = self.knowledgeDB.search_by_ids(retrieved_ids)
+                request = {
+                    "context": self.pack_context(ret_contexts),
+                    "message": question
+                }
+                answer = context_compressor.run(request)
+                enriched_question_list.append(
+                    EnrichQuestion(question=question, answer=answer)
+                )
+            section_list.append(
+                EnrichSection(
+                    section=_section, questions=enriched_question_list
+                )
+            )
+        se = SessionEnrich(
+            session_id=session_id,
+            step=SessionStep.REVISE,
+            enrich=Enrich(sections=section_list)
+        )
+        self.sessionDB.update_enrich(se)
+        return se

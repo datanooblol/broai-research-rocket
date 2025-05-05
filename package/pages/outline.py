@@ -1,6 +1,7 @@
 import streamlit as st
 from package.services import session as sessionAPI
 from package.services.utils import set_state
+from package.services.research import ResearchService
 
 st.title("Outline")
 
@@ -34,12 +35,25 @@ if save_btn_col.button("Save/Update"):
     )
     st.toast("Outline saved/updated successfully")
 
+
+@st.dialog("Research...")
+def research_dialog():
+    service = ResearchService()
+    session_id=st.session_state.session_id
+    user_id=st.session_state.user_info.get("user_id")
+
+    with st.status("STEPS..."):
+        st.write("Searching...")
+        st.write(service.search(session_id, user_id))
+        st.write("Retrieving...")
+        st.write(service.retrieve(session_id, user_id))
+        st.write("Enriching...")
+        st.write(service.enrich(session_id, user_id))
+        st.write("Revising...")
+        st.write(service.publish(session_id, user_id))
+        st.switch_page("package/pages/publish.py")
+    # st.rerun()
+
+
 if research_btn_col.button("Research"):
-    st.toast("Start Research")
-    sessionAPI.research(
-        session_id=st.session_state.session_id,
-        user_id=st.session_state.user_info.get("user_id")
-    )
-    set_state("publish", response.get("publish"))
-    st.toast("Successfully Researched")
-    st.switch_page("package/pages/publish.py")
+    research_dialog()
