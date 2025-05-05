@@ -1,28 +1,18 @@
-from fastapi import APIRouter
-from package.database.user import UserDB, UserLogin, UserRegister, UserInfo
+from fastapi import APIRouter, Depends
+from package.database.user.model import UserLogin, UserRegister, UserInfo
+from package.database.utils import get_UserDB
+from package.routers.v1.user.service import UserService
 
-from dotenv import load_dotenv
-import os
-load_dotenv()  # take environment variables
-
-userDB = UserDB(db_name=os.getenv("DB_NAME"))
 router = APIRouter(prefix="/v1/user", tags=["user"])
 
-@router.post("/register")
-async def user_register(user: UserRegister):
-    try:
-        records = userDB.register(user)
-        return {"response": "success"}
-    except Exception as e:
-        return {"response": str(e)}
 
-@router.post("/login")
-async def user_login(user: UserLogin):
-    records = userDB.login(user)
-    if records.shape[0]==0:
-        return {"response": f"username: {user.username} not found"}
-    records = UserLogin(**records.to_dict(orient="records")[0])
-    if user.password != records.password:
-        return {"response": "incorrect password"}
-    return UserInfo(**records.model_dump())
+@router.post("/register", response_model=UserInfo)
+async def user_register(user: UserRegister, db=Depends(get_UserDB)):
+    service = UserService(db)
+    return service.register_user(user)
 
+
+@router.post("/login", response_model=UserInfo)
+async def user_login(user: UserLogin, db=Depends(get_UserDB)):
+    service = UserService(db)
+    return service.login_user(user)

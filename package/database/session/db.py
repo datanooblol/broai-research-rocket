@@ -25,9 +25,10 @@ class SessionDB(BaseDuck):
         self.execute(query)
 
     def add_session(self, session:SessionInfo):
-        query = f"""INSERT INTO {self.table} (session_id, user_id, step, created_at, updated_at) VALUES (?, ?, ?, ?, ?);"""
-        rows = [session.session_id, session.user_id, session.step, session.created_at, session.created_at]
-        return self.execute(query, rows)
+        query = f"""INSERT INTO {self.table} (session_id, user_id, tone_of_voice, outline, step, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?);"""
+        rows = [session.session_id, session.user_id, "Tone of voice of this research", "outline of the research", session.step, session.created_at, session.created_at]
+        self.execute(query, rows)
+        return session.session_id
 
     def get_session(self, session_id:str):
         query = f"SELECT * FROM {self.table} WHERE session_id = ?;"
