@@ -41,10 +41,10 @@ def web_search(session_id:str) -> UrlRecords:
     parsed_outline = json.loads(parsed_outline)
     results = []
     for section in parsed_outline:
-        print(section.get("section"))
+        # print(section.get("section"))
         questions = section.get("questions", [])
         for question in questions:
-            print(question)
+            # print(question)
             results.append(search_searxng(query=question, opts=opts))
     urls_obj = []
     url_list = []
@@ -180,3 +180,6 @@ def publish(session_id):
     sp = SessionPublish(session_id=session_id, publish=_publish, step=SessionStep.PUBLISH)
     sessionDB.update_publish(sp)
     return sp
+
+def get_knowledge_by_ids(ids):
+    return knowledgeDB.search_by_ids(ids)

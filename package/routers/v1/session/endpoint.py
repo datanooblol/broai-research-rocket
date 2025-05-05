@@ -1,15 +1,10 @@
 from fastapi import APIRouter
 from package.database.session.db import SessionDB
 from package.database.session.model import SessionInfo, SessionToneOut, SessionParsedOutline
-from package.routers.v1.session.service import web_search, web_register, web_scrape, retrieve, enrich, publish
+from package.routers.v1.session.service import web_search, web_register, web_scrape, retrieve, enrich, publish, get_knowledge_by_ids
 from package.lib.parse_outline import parse_outline
 from typing import List
 import json
-# from broai.experiments.cross_encoder import ReRanker
-# rr = ReRanker()
-
-# from broai.experiments.huggingface_embedding import BAAIEmbedding, EmbeddingDimension
-# baai_em = BAAIEmbedding()
 
 from dotenv import load_dotenv
 import os
@@ -22,8 +17,8 @@ router = APIRouter(prefix="/v1/session", tags=["session"])
 async def create_session(session:SessionInfo):
     """use with button create in workspace page and move to outline page"""
     try:
-        records = sessionDB.add_session(session)
-        return {"response": "success"}
+        session_id = sessionDB.add_session(session)
+        return {"session_id": session_id}
     except Exception as e:
         return {"response": str(e)}
 
@@ -69,17 +64,33 @@ async def research(session:SessionInfo):
     publish(session_id)
     return {"response": "success"}
 
-@router.post("/research/knowledge")
+@router.post("/outline")
+async def retrieve_outline(session:SessionInfo):
+    record = sessionDB.get_session(session.session_id).to_dict(orient="records")[0]
+    tone_of_voice = record.get("tone_of_voice")
+    outline = record.get("outline")
+    return {"tone_of_voice": tone_of_voice, "outline": outline}
+
+@router.post("/knowledge")
 async def retrieve_knowledge(session:SessionInfo):
     record = sessionDB.get_session(session.session_id).to_dict(orient="records")[0].get("knowledge")
-    return {"response": json.loads(record)}
+    record = json.loads(record)
+    for section in record.get("sections"):
+        _section = section.get("section")
+        _questions = section.get("questions")
+        for _question in _questions:
+            question = _question.get("question")
+            retrieved_ids = _question.get("retrieved_ids")
+            ret_contexts = get_knowledge_by_ids(retrieved_ids)
+            _question['retrieved_ids'] = ret_contexts
+    return record
 
-@router.post("/research/enrich")
+@router.post("/enrich")
 async def retrieve_enrich(session:SessionInfo):
     record = sessionDB.get_session(session.session_id).to_dict(orient="records")[0].get("enrich")
-    return {"response": json.loads(record)}
+    return json.loads(record)
 
-@router.post("/research/publish")
+@router.post("/publish")
 async def retrieve_publish(session:SessionInfo):
     record = sessionDB.get_session(session.session_id).to_dict(orient="records")[0].get("publish")
-    return {"response": record}
+    return {"publish": record}
