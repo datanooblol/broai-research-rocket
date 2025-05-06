@@ -4,7 +4,6 @@ from broai.experiments.bro_agent import BroAgent
 from pydantic import BaseModel, Field
 from typing import Tuple, List, Dict, Any, Optional
 from broai.prompt_management.utils import get_input
-
 # you can use any model sharing the same methods: .run, .SystemMessage, .UserMessage, .AIMessage
 from broai.llm_management.ollama import BedrockOllamaChat
 bedrock_model = BedrockOllamaChat(
@@ -26,7 +25,6 @@ prompt_generator = PromptGenerator(
         instructions=[
             "read the draft and outline carefully, then rewrite it as in the provided message",
             "use outline as a skeleton of your respond, adjust it only when it's neccessary",
-            # "some sentences or paragraphs may be synthesized or summarized from multiple sources, always include the sources in the citations",
             "some sentences or paragraphs may be synthesized or summarized from multiple sources, always include and combine the sources in the citations",
             "always respect the sources, citation is needed",
         ],
@@ -36,7 +34,10 @@ prompt_generator = PromptGenerator(
             "do not leave any citation out of the reference section",
             "do not mix up citations with others",
             "always write intext-citation with the same [number] as in the reference section",
-            "always write a reference section as follows: References:\n- [number] source1\n- [number] source2\n- [number] source3"
+            "always write a reference section in the following format: \nReferences:\n- [number] source1\n- [number] source2\n- [number] source3",
+            "avoid adding a name of the source, keep only [number] source",
+            "carefully deduplicate a reference section",
+            "avoid repeating the same source in a reference section at any cost",
         ]
     ),
     fallback=None

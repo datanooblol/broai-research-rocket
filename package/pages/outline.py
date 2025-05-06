@@ -46,7 +46,12 @@ def research_dialog():
         st.write("Searching...")
         st.write(service.search(session_id, user_id))
         st.write("Retrieving...")
-        st.write(service.retrieve(session_id, user_id))
+        st.write(service.retrieve(
+            session_id,
+            user_id,
+            st.session_state.n_retrieve,
+            st.session_state.n_rerank,
+        ))
         st.write("Enriching...")
         st.write(service.enrich(session_id, user_id))
         st.write("Revising...")

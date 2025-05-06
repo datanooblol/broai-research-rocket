@@ -1,31 +1,27 @@
 import streamlit as st
-from package.services import session as sessionAPI
+from package.services.session import DisplayService
 from package.services.utils import set_state
+from package.components.content_icon_bars import refresh_icon, generate_icon
 
 st.title("Knowledge")
 
 if "knowledge" not in st.session_state:
     set_state("knowledge", None)
 if st.session_state.session_id:
-    # if st.session_state.knowledge is None:
-    if True:
-        response = sessionAPI.knowledge(
-            session_id=st.session_state.session_id,
-            user_id=st.session_state.user_info.get("user_id")
-        )
-        set_state("knowledge", response)
-    if st.button("🔄"):
-        response = sessionAPI.knowledge(
-            session_id=st.session_state.session_id,
-            user_id=st.session_state.user_info.get("user_id")
-        )
-        set_state("knowledge", response)
-
+    service = DisplayService()
+    response = service.knowledge(
+        session_id=st.session_state.session_id,
+        user_id=st.session_state.user_info.get("user_id")
+    )
+    set_state("knowledge", response)
+    eb1, eb2, eb3, eb4 = st.columns([1, 1, 1, 13])
+    refresh_icon(eb1, method="knowledge")
+    contents = []
     for section in st.session_state.knowledge.get("sections"):
         _section = section.get("section")
         _questions = section.get("questions")
         st.write(f"## {_section}")
-        
+
         for _question in _questions:
             question = _question.get("question")
             retrieved_contexts = _question.get("retrieved_ids")
@@ -43,4 +39,3 @@ if st.session_state.session_id:
                 for c in _cs:
                     with st.expander(f"{c[:150]}"):
                         st.write(c)
-    # st.write(st.session_state.knowledge)

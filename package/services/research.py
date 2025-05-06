@@ -15,13 +15,20 @@ class ResearchService:
         self.ENDPOINT = ENDPOINT
 
     def post(
-        self, session_id: str, user_id: str, endpoint: str
+        self, session_id: str, user_id: str, endpoint: str, **kwargs
     ) -> Dict[str, Any]:
         headers = {"Content-type": "application/json"}
         payload = {
             "session_id": session_id,
             "user_id": user_id
         }
+        n_retrieve = kwargs.get("n_retrieve", None)
+        n_rerank = kwargs.get("n_rerank", None)
+        if isinstance(n_retrieve, int) and isinstance(n_rerank, int):
+            payload.update({
+                "n_retrieve": n_retrieve,
+                "n_rerank": n_rerank
+            })
         response = requests.post(
             f"{self.ENDPOINT}/v1/session/research/{endpoint}",
             headers=headers,
@@ -32,8 +39,8 @@ class ResearchService:
     def search(self, session_id: str, user_id: str) -> Dict[str, Any]:
         return self.post(session_id, user_id, "search")
 
-    def retrieve(self, session_id: str, user_id: str) -> Dict[str, Any]:
-        return self.post(session_id, user_id, "retrieve")
+    def retrieve(self, session_id: str, user_id: str, n_retrieve: int, n_rerank: int) -> Dict[str, Any]:
+        return self.post(session_id, user_id, "retrieve", n_retrieve=n_retrieve, n_rerank=n_rerank)
 
     def enrich(self, session_id: str, user_id: str) -> Dict[str, Any]:
         return self.post(session_id, user_id, "enrich")
