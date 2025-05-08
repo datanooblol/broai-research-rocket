@@ -30,6 +30,8 @@ services:
       - searxng
     volumes:
       - valkey-data2:/data
+    ports:
+      - "6379:6379"
     cap_drop:
       - ALL
     cap_add:
@@ -67,6 +69,17 @@ services:
       options:
         max-size: "1m"
         max-file: "1"
+        
+  redis-celery: # the service name must match redis-commander environment
+    image: redis
+    ports: 
+      - "6378:6379"
+  redis-commander:
+    image: rediscommander/redis-commander
+    ports: 
+      - "8081:8081"
+    environment:
+      - "REDIS_HOSTS=local:redis-celery:6379" # the environment here should reflect the redis's name of service
 
 networks:
   searxng:
