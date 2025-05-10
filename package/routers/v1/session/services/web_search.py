@@ -1,5 +1,5 @@
 from package.database.web_register.model import UrlRecords, UrlRecord, WebStatus
-from package.lib.searxng import SearxngSearchOptions, search_searxng
+from package.utils.searxng import SearxngSearchOptions, search_searxng
 from broai.experiments.web_scraping import scrape_by_jina_ai
 from broai.experiments.cleanup_markdown import clean_up_markdown_link
 from broai.experiments.chunk import split_overlap
