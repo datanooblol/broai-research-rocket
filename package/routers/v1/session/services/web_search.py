@@ -27,6 +27,7 @@ class WebSearchService:
         for section in parsed_outline:
             questions = section.get("questions", [])
             for question in questions:
+                # this will be fixed for whitelist
                 results.append(search_searxng(query=question, opts=opts))
         urls_obj = []
         url_list = []
