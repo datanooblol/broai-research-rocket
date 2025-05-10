@@ -19,16 +19,16 @@ class EnrichService:
             source = c.metadata.copy().get("source", "")
             context = c.context
             if source not in source_list:
-                context_dict[source] = [context]
+                context_dict[source] = [f"<|start_content|>{context}<|end_content|>"]
                 source_list.append(source)
             else:
-                context_dict[source].append(context)
+                context_dict[source].append(f"<|start_content|>{context}<|end_content|>")
         prompt = []
         for s, c in context_dict.items():
             # print(s)
             context_str = "\n".join(c)
             prompt.append(
-                f"SOURCE: {s}\n{context_str}"
+                f"SOURCE: <|start_source|>{s}<|end_source|>\nCONTENT:\n{context_str}"
             )
         return "\n\n".join(prompt)
 

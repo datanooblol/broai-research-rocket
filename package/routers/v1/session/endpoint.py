@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from package.database.session.model import (
-    SessionInfo, SessionToneOut, SessionParsedOutline
+    SessionInfo, SessionToneOut, SessionParsedOutline, SessionRetrieve
 )
-from package.lib.parse_outline import parse_outline
+from package.utils.parse_outline import parse_outline
 import json
 from package.routers.v1.session.services.web_search import WebSearchService
 from package.routers.v1.session.services.retrieve import RetrieveService
@@ -80,13 +80,13 @@ async def research_search(
 
 @router.post("/research/retrieve")
 async def research_retrieve(
-    session: SessionInfo,
+    session: SessionRetrieve,
     sessionDB=Depends(get_SessionDB),
     knowledgeDB=Depends(get_KnowledgeDB),
     reranker=Depends(get_ReRanker)
 ):
     service = RetrieveService(sessionDB, knowledgeDB, reranker)
-    service.retrieve(session.session_id)
+    service.retrieve(session.session_id, session.n_retrieve, session.n_rerank)
     return {"response": "retrieved successfully"}
 
 
@@ -140,7 +140,6 @@ async def retrieve_enrich(
 ):
     record = sessionDB.get_session(session.session_id).to_dict(orient="records")[0].get("enrich")
     return json.loads(record)
-
 
 @router.post("/publish")
 async def retrieve_publish(

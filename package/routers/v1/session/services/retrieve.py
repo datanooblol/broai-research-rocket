@@ -12,7 +12,13 @@ class RetrieveService:
         self.knowledgeDB = knowledgeDB
         self.reranker = reranker
 
-    def retrieve(self, session_id: str):
+    def retrieve(
+        self,
+        session_id: str,
+        n_retrieve: int,
+        n_rerank: int,
+        search_method: str = "vector"
+    ):
         """get parsed_outline, vectorsearch, rerank, update knowledge, return retrieved_contexts"""
         records = self.sessionDB.get_session(session_id)
         record = records.to_dict(orient="records")[0]
@@ -23,11 +29,11 @@ class RetrieveService:
             _section = section.get("section")
             knowledge_list = []
             for _question in section.get("questions"):
-                ret_contexts = self.knowledgeDB.vector_search(
-                    search_query=_question
+                ret_contexts = self.knowledgeDB.search(
+                    search_query=_question, limit=n_retrieve, search_method=search_method
                 )
                 reranked_contexts, scores = self.reranker.run(
-                    _question, ret_contexts, top_n=5
+                    _question, ret_contexts, top_n=n_rerank
                 )
                 knowledge_list.append(
                     KnowledgeQuestion(

@@ -32,6 +32,10 @@ class SessionInfo(SessionBase):
     session_id:str = Field(default_factory=lambda x: str(uuid4()))
     user_id:str
 
+class SessionRetrieve(SessionInfo):
+    n_retrieve:int
+    n_rerank:int
+
 class SessionToneOut(SessionBase):
     session_id:str
     tone_of_voice:str

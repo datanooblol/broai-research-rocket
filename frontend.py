@@ -49,8 +49,9 @@ pages = {
 }
 
 with st.sidebar:
-    st.slider("Url Limit", 0, 5, 3, key="url_limit")
-    st.slider("Retrieve Limit", 3, 7, 5, key="retrieve_limit")
+    st.slider("Url Limit", 0, 5, 3, key="n_url")
+    st.slider("Retrieve Limit", 5, 10, 7, key="n_retrieve")
+    st.slider("Rerank Limit", 3, 7, 5, key="n_rerank")
 
 pg = st.navigation(pages)
 pg.run()

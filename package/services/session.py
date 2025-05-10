@@ -35,44 +35,27 @@ def update_outline(session_id, tone_of_voice, outline):
     
     response = requests.put(f"{ENDPOINT}/v1/session/update-outline", headers=headers, json=payload)
 
+class DisplayService:
+    def __init__(self, ENDPOINT: str = os.getenv("ENDPOINT")):
+        self.ENDPOING = ENDPOINT
 
-def research(session_id, user_id):
-    headers = {"Content-type": "application/json"}
-    payload = {
-        "session_id": session_id,
-        "user_id": user_id
-    }
-    response = requests.post(f"{ENDPOINT}/v1/session/research", headers=headers, json=payload)
+    def post(self, session_id: str, user_id: str, endpoint: str):
+        headers = {"Content-type": "application/json"}
+        payload = {
+            "session_id": session_id,
+            "user_id": user_id
+        }
+        response = requests.post(f"{ENDPOINT}/v1/session/{endpoint}", headers=headers, json=payload)
+        return response.json()
 
+    def knowledge(self, session_id, user_id):
+        return self.post(session_id, user_id, "knowledge")
 
-def knowledge(session_id, user_id):
-    headers = {"Content-type": "application/json"}
-    payload = {
-        "session_id": session_id,
-        "user_id": user_id
-    }
-    response = requests.post(f"{ENDPOINT}/v1/session/knowledge", headers=headers, json=payload)
-    return response.json()
+    def enrich(self, session_id, user_id):
+        return self.post(session_id, user_id, "enrich")
 
-
-def enrich(session_id, user_id):
-    headers = {"Content-type": "application/json"}
-    payload = {
-        "session_id": session_id,
-        "user_id": user_id
-    }
-    response = requests.post(f"{ENDPOINT}/v1/session/enrich", headers=headers, json=payload)
-    return response.json()
-
-
-def publish(session_id, user_id):
-    headers = {"Content-type": "application/json"}
-    payload = {
-        "session_id": session_id,
-        "user_id": user_id
-    }
-    response = requests.post(f"{ENDPOINT}/v1/session/publish", headers=headers, json=payload)
-    return response.json()
+    def publish(self, session_id, user_id):
+        return self.post(session_id, user_id, "publish")
 
 
 def create_session(user_id):
