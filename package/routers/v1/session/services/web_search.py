@@ -1,10 +1,12 @@
 from package.database.web_register.model import UrlRecords, UrlRecord, WebStatus
 from package.utils.searxng import SearxngSearchOptions, search_searxng
-from broai.experiments.web_scraping import scrape_by_jina_ai
-from broai.experiments.cleanup_markdown import clean_up_markdown_link
 from broai.experiments.chunk import split_overlap
 from broai.interface import Context
 import json
+from package.workers.scrape_worker import scrape_worker
+from celery import group
+import os
+import shutil
 
 
 class WebSearchService:
@@ -52,45 +54,59 @@ class WebSearchService:
         ])
         if len(selected_urls.urls) > 0:
             self.webDB.register(selected_urls)
+            
+        print("found urls from search engine:", len(urls))
+        print("start scraping with selected urls:", len(selected_urls.urls))
         return selected_urls
 
+    def delete_tmp(self, session_id: str):
+        dir_path = os.path.join("./tmp", session_id)
+        if os.path.exists(dir_path):
+            shutil.rmtree(dir_path)
+    
+    def load_all_json_files(self, session_id: str):
+        dir_path = os.path.join("./tmp", session_id)
+        data_list = []
+    
+        if not os.path.exists(dir_path):
+            print(f"No folder found for session: {session_id}")
+            return data_list
+    
+        for filename in os.listdir(dir_path):
+            if filename.endswith(".json"):
+                file_path = os.path.join(dir_path, filename)
+                with open(file_path, "r") as f:
+                    try:
+                        data = json.load(f)
+                        data_list.append(data)
+                    except json.JSONDecodeError as e:
+                        print(f"Skipping {filename}: Invalid JSON - {e}")
+    
+        return data_list
+    
     def web_scrape(self, session: UrlRecords) -> None:
-        for uc in session.urls:
-            url = uc.url
-            self.webDB.update_status([
-                UrlRecord(
-                    url_id=uc.url_id,
-                    url=url,
-                    content="",
-                    remark="",
-                    status=WebStatus.DOING
-                )
-            ])
-            try:
-                text = scrape_by_jina_ai(url)
-                text = clean_up_markdown_link(text)
-                context = Context(context=text, metadata={"source": url})
-                contexts = split_overlap([context])
-                self.knowledgeDB.add_contexts(contexts)
-                self.webDB.update_status([
-                    UrlRecord(
-                        url_id=uc.url_id,
-                        url=url,
-                        content="",
-                        remark="",
-                        status=WebStatus.DONE
-                    )
-                ])
-            except Exception as e:
-                self.webDB.update_status([
-                    UrlRecord(
-                        url_id=uc.url_id,
-                        url=url,
-                        content="",
-                        remark=f"{e}",
-                        status=WebStatus.ERROR
-                    )
-                ])
+        urls = [uc.url for uc in session.urls]
+        session_id = session.session_id
+        jobs = group([scrape_worker.s(session_id, url) for url in urls])
+        results = jobs.apply_async()
+        _ = results.get()
+        self.webDB.update_status([
+            UrlRecord(url_id=uc.url_id, url=uc.url, content="", remark="", status=WebStatus.DOING)
+            for uc in session.urls
+        ])
+        all_data = self.load_all_json_files(session_id)
+        all_contexts = []
+        for data in all_data:
+            url = list(data.keys())[0]
+            context = Context(context=data[url], metadata={"source": url})
+            contexts = split_overlap([context])
+            all_contexts.extend(contexts)
+        self.knowledgeDB.add_contexts(contexts)
+        self.webDB.update_status([
+            UrlRecord(url_id=uc.url_id, url=uc.url, content="", remark="", status=WebStatus.DONE)
+            for uc in session.urls
+        ])
+        self.delete_tmp(session_id)
 
     def run(self, session_id):
         results = self.web_search(session_id)

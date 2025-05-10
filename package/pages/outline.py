@@ -39,22 +39,20 @@ if save_btn_col.button("Save/Update"):
 @st.dialog("Research...")
 def research_dialog():
     service = ResearchService()
-    session_id=st.session_state.session_id
-    user_id=st.session_state.user_info.get("user_id")
-
-    with st.status("STEPS..."):
-        st.write("Searching...")
+    session_id = st.session_state.session_id
+    user_id = st.session_state.user_info.get("user_id")
+    with st.spinner("Searching...", show_time=True):
         st.write(service.search(session_id, user_id))
-        st.write("Retrieving...")
+    with st.spinner("Retrieving...", show_time=True):
         st.write(service.retrieve(
             session_id,
             user_id,
             st.session_state.n_retrieve,
-            st.session_state.n_rerank,
+            st.session_state.n_rerank
         ))
-        st.write("Enriching...")
+    with st.spinner("Enriching...", show_time=True):
         st.write(service.enrich(session_id, user_id))
-        st.write("Revising...")
+    with st.spinner("Revising...", show_time=True):
         st.write(service.publish(session_id, user_id))
         st.switch_page("package/pages/publish.py")
     # st.rerun()
