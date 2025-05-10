@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from package.database.session.model import (
     SessionInfo, SessionToneOut, SessionParsedOutline, SessionRetrieve
 )
-from package.lib.parse_outline import parse_outline
+from package.utils.parse_outline import parse_outline
 import json
 from package.routers.v1.session.services.web_search import WebSearchService
 from package.routers.v1.session.services.retrieve import RetrieveService
