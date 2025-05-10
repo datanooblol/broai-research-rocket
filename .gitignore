@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 research-rocket.db
+*.db
 __pycache__/
 *.py[cod]
 *$py.class
