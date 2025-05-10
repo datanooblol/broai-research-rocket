@@ -1,3 +1,0 @@
-{
-  "https://gravity.fitness/blogs/training/how-to-train-as-a-modern-day-ninja?srsltid=AfmBOor2h3VEYdoq5lU6aEOnO34waooa05o0Jc6ZDm0u7O5k14TbLRva": "{\"data\":null,\"retryAfter\":56,\"retryAfterDate\":\"2025-05-10T05:28:10.965Z\",\"code\":429,\"name\":\"Function\",\"status\":42903,\"message\":\"Per IP rate limit exceeded (CRAWL 20 times since Sat May 10 2025 05:26:14 GMT+0000 (Coordinated Universal Time))\",\"readableMessage\":\"RateLimitTriggeredError: 42903\"}"
-}

@@ -1,3 +1,0 @@
-{
-  "https://pytorch.org/tutorials/beginner/nlp/word_embeddings_tutorial.html": "{\"data\":null,\"retryAfter\":55,\"retryAfterDate\":\"2025-05-10T05:28:10.925Z\",\"code\":429,\"name\":\"Function\",\"status\":42903,\"message\":\"Per IP rate limit exceeded (CRAWL 20 times since Sat May 10 2025 05:26:15 GMT+0000 (Coordinated Universal Time))\",\"readableMessage\":\"RateLimitTriggeredError: 42903\"}"
-}
