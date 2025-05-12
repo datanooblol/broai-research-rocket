@@ -7,6 +7,7 @@ from package.workers.scrape_worker import scrape_worker
 from celery import group
 import os
 import shutil
+from typing import List
 
 
 class WebSearchService:
@@ -15,7 +16,7 @@ class WebSearchService:
         self.sessionDB = sessionDB
         self.knowledgeDB = knowledgeDB
 
-    def web_search(self, session_id: str) -> UrlRecords:
+    def web_search(self, session_id: str, whitelist: List[str]=None) -> UrlRecords:
         opts = SearxngSearchOptions(
             engines=["google", "bing", "DuckDuckGo"],
             language="en",
@@ -30,7 +31,7 @@ class WebSearchService:
             questions = section.get("questions", [])
             for question in questions:
                 # this will be fixed for whitelist
-                results.append(search_searxng(query=question, opts=opts))
+                results.append(search_searxng(query=question, opts=opts, whitelist=whitelist))
         urls_obj = []
         url_list = []
         for urls in results:
@@ -109,6 +110,12 @@ class WebSearchService:
         self.delete_tmp(session_id)
 
     def run(self, session_id):
-        results = self.web_search(session_id)
+        whitelist = self.sessionDB.get_session(session_id)['whitelist'][0]
+        if len(whitelist)==0 or "all" in whitelist:
+            whitelist = None
+        else:
+            whitelist = json.loads(whitelist)
+        results = self.web_search(session_id, whitelist)
         scrap_urls = self.web_register(results)
-        self.web_scrape(scrap_urls)
+        if len(scrap_urls.urls) > 0:
+            self.web_scrape(scrap_urls)

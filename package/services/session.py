@@ -35,6 +35,25 @@ def update_outline(session_id, tone_of_voice, outline):
     
     response = requests.put(f"{ENDPOINT}/v1/session/update-outline", headers=headers, json=payload)
 
+
+def get_whitelist(user_id, session_id):
+    headers = {"Content-type": "application/json"}
+    payload = {
+        "session_id": session_id,
+        "user_id": user_id,
+    }
+    response = requests.post(f"{ENDPOINT}/v1/session/whitelist", headers=headers, json=payload)
+    return response.json()
+
+def update_whitelist(session_id, whitelist):
+    headers = {"Content-type": "application/json"}
+    payload = {
+        "session_id": session_id,
+        "whitelist": whitelist
+    }
+    
+    response = requests.put(f"{ENDPOINT}/v1/session/update-whitelist", headers=headers, json=payload)
+
 class DisplayService:
     def __init__(self, ENDPOINT: str = os.getenv("ENDPOINT")):
         self.ENDPOING = ENDPOINT
@@ -46,7 +65,10 @@ class DisplayService:
             "user_id": user_id
         }
         response = requests.post(f"{ENDPOINT}/v1/session/{endpoint}", headers=headers, json=payload)
-        return response.json()
+        response = response.json()
+        if "error" in response:
+            return None
+        return response
 
     def knowledge(self, session_id, user_id):
         return self.post(session_id, user_id, "knowledge")

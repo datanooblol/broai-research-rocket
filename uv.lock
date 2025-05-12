@@ -280,7 +280,7 @@ wheels = [
 
 [[package]]
 name = "broai"
-version = "0.1.13"
+version = "0.1.14"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "boto3" },
@@ -299,9 +299,9 @@ dependencies = [
     { name = "torch" },
     { name = "transformers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e1/5f/d92ade21a8f14203a23750e563e80c2dc8b0e7d2ca6115ef67608e068521/broai-0.1.13.tar.gz", hash = "sha256:04a617420cd71b7c00914f72e570835cab3f2a72003264730354ef8baf1d0849", size = 17661, upload-time = "2025-05-04T17:08:54.596Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c7/d2/966840dc18d419261765cd53e891c8c8d84b1b21f8cdaa3fdb6230ef1342/broai-0.1.14.tar.gz", hash = "sha256:17d99e78f6c6a2c1e377cce55e1aa53a8a8fcb375a9d34edcc83e2b6dd781dd7", size = 18151, upload-time = "2025-05-12T09:44:26.006Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0e/4f/8adb2ba6823f167dc989229e1db1de6778f5a06ab09afe315566ef50531a/broai-0.1.13-py3-none-any.whl", hash = "sha256:0a0f187fd0768c299856bc16bbaec8f3b263161527536b38c7d41dd165609eb8", size = 24003, upload-time = "2025-05-04T17:08:53.346Z" },
+    { url = "https://files.pythonhosted.org/packages/9f/e1/43fdc5935e6b18c5374f60689de73df73afeaa8218642ef9e4074d340e8f/broai-0.1.14-py3-none-any.whl", hash = "sha256:6cb23d6b786a150ee28bcec1fa55bcea2aeb27434f836c5c75b6f5d15c17392a", size = 24472, upload-time = "2025-05-12T09:44:24.918Z" },
 ]
 
 [[package]]
@@ -321,7 +321,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "broai", specifier = "==0.1.13" },
+    { name = "broai", specifier = "==0.1.14" },
     { name = "celery", extras = ["redis"], specifier = ">=5.5.2" },
     { name = "fastapi", specifier = ">=0.115.12" },
     { name = "python-dotenv", specifier = ">=1.1.0" },

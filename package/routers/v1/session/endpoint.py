@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from package.database.session.model import (
-    SessionInfo, SessionToneOut, SessionParsedOutline, SessionRetrieve
+    SessionInfo, SessionToneOut, SessionParsedOutline, SessionRetrieve, SessionWhitelist
 )
 from package.utils.parse_outline import parse_outline
 import json
@@ -65,6 +65,24 @@ async def update_outline(
     )
     return {"response": parsed_outline}
 
+@router.post("/whitelist")
+async def get_whitelist(
+    session: SessionInfo,
+    sessionDB=Depends(get_SessionDB)
+):
+    records = sessionDB.get_session(session.session_id)
+    records = records['whitelist'][0]
+    records = json.loads(records)
+    return {"whitelist": records}
+
+@router.put("/update-whitelist")
+async def update_whitelist(
+    session: SessionWhitelist,
+    sessionDB=Depends(get_SessionDB)
+):
+    """update whitelist after clicking save button"""
+    _ = sessionDB.update_whitelist(session)
+    return {"response": "whitelist updated successfully"}
 
 @router.post("/research/search")
 async def research_search(
@@ -86,7 +104,11 @@ async def research_retrieve(
     reranker=Depends(get_ReRanker)
 ):
     service = RetrieveService(sessionDB, knowledgeDB, reranker)
-    service.retrieve(session.session_id, session.n_retrieve, session.n_rerank)
+    whitelist = sessionDB.get_session(session.session_id)['whitelist'][0]
+    whitelist = json.loads(whitelist)
+    if len(whitelist)==0 or "all" in whitelist:
+        whitelist = None
+    service.retrieve(session.session_id, session.n_retrieve, session.n_rerank, whitelist=whitelist)
     return {"response": "retrieved successfully"}
 
 
@@ -130,7 +152,10 @@ async def retrieve_knowledge(
     reranker=Depends(get_ReRanker)
 ):
     service = RetrieveService(sessionDB, knowledgeDB, reranker)
-    return service.get_knowledge(session.session_id)
+    records = service.get_knowledge(session.session_id)
+    if records:
+        return records
+    return {"error": "not retrieve"}
 
 
 @router.post("/enrich")
@@ -139,7 +164,9 @@ async def retrieve_enrich(
     sessionDB=Depends(get_SessionDB)
 ):
     record = sessionDB.get_session(session.session_id).to_dict(orient="records")[0].get("enrich")
-    return json.loads(record)
+    if record:
+        return json.loads(record)
+    return {"error": "not enrich"}
 
 @router.post("/publish")
 async def retrieve_publish(

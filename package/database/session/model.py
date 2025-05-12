@@ -60,6 +60,10 @@ class SessionKnowledge(SessionBase):
     session_id:str
     knowledge:Knowledge
 
+class SessionWhitelist(SessionBase):
+    session_id:str
+    whitelist:List[str] = Field(default_factory=list)
+
 class EnrichQuestion(BaseModel):
     question:str
     answer:str

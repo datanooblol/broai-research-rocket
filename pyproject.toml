@@ -5,7 +5,7 @@ description = "BroAI, your new research bro"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "broai==0.1.13",
+    "broai==0.1.14",
     "celery[redis]>=5.5.2",
     "fastapi>=0.115.12",
     "python-dotenv>=1.1.0",

@@ -4,7 +4,7 @@ from package.database.session.model import (
 from package.database.session.model import SessionStep
 from typing import List
 import json
-
+from broai.experiments.vector_store import filter_whitelist_query
 
 class RetrieveService:
     def __init__(self, sessionDB, knowledgeDB, reranker):
@@ -17,20 +17,27 @@ class RetrieveService:
         session_id: str,
         n_retrieve: int,
         n_rerank: int,
-        search_method: str = "vector"
+        search_method: str = "vector",
+        whitelist: List[str] = None
     ):
         """get parsed_outline, vectorsearch, rerank, update knowledge, return retrieved_contexts"""
         records = self.sessionDB.get_session(session_id)
         record = records.to_dict(orient="records")[0]
         parsed_outline = record.get("parsed_outline")
         parsed_outline = json.loads(parsed_outline)
+        
         section_list = []
+        if whitelist is None:
+            filter_metadata = None
+        else:
+            filter_metadata = filter_whitelist_query(whitelist)
         for section in parsed_outline:
             _section = section.get("section")
             knowledge_list = []
             for _question in section.get("questions"):
+                # this will have to get whitelist and filter out only whitelist domain
                 ret_contexts = self.knowledgeDB.search(
-                    search_query=_question, limit=n_retrieve, search_method=search_method
+                    search_query=_question, limit=n_retrieve, search_method=search_method, filter_metadata=filter_metadata
                 )
                 reranked_contexts, scores = self.reranker.run(
                     _question, ret_contexts, top_n=n_rerank
@@ -58,11 +65,12 @@ class RetrieveService:
 
     def get_knowledge(self, session_id: str):
         record = self.sessionDB.get_session(session_id).to_dict(orient="records")[0].get("knowledge")
-        record = json.loads(record)
-        for section in record.get("sections"):
-            _questions = section.get("questions")
-            for _question in _questions:
-                retrieved_ids = _question.get("retrieved_ids")
-                ret_contexts = self.get_knowledge_by_ids(retrieved_ids)
-                _question['retrieved_ids'] = ret_contexts
+        if record:
+            record = json.loads(record)
+            for section in record.get("sections"):
+                _questions = section.get("questions")
+                for _question in _questions:
+                    retrieved_ids = _question.get("retrieved_ids")
+                    ret_contexts = self.get_knowledge_by_ids(retrieved_ids)
+                    _question['retrieved_ids'] = ret_contexts
         return record

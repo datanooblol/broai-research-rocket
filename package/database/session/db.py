@@ -1,5 +1,5 @@
 from package.database.base import BaseDuck
-from package.database.session.model import SessionInfo, SessionToneOut, SessionParsedOutline, SessionKnowledge, SessionEnrich, SessionPublish
+from package.database.session.model import SessionInfo, SessionToneOut, SessionParsedOutline, SessionKnowledge, SessionEnrich, SessionPublish, SessionWhitelist
 
 class SessionDB(BaseDuck):
     def __init__(self, db_name):
@@ -15,6 +15,7 @@ class SessionDB(BaseDuck):
             parsed_outline JSON,
             step VARCHAR,
             step_remark VARCHAR,
+            whitelist JSON, 
             knowledge JSON,
             enrich JSON,
             publish VARCHAR,
@@ -25,10 +26,10 @@ class SessionDB(BaseDuck):
         self.execute(query)
 
     def add_session(self, session:SessionInfo):
-        query = f"""INSERT INTO {self.table} (session_id, user_id, tone_of_voice, outline, step, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?);"""
+        query = f"""INSERT INTO {self.table} (session_id, user_id, tone_of_voice, outline, step, whitelist, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?);"""
         _tone_of_voice = "Tone of voice of this research. i.e. \n1) A user-friendly guide for hiking\n2) A manual for writing a python. Return python code block when neccessary."
         _outline = "## Section of your research\n- topic in the section\n- topic in the section"
-        rows = [session.session_id, session.user_id, _tone_of_voice, _outline, session.step, session.created_at, session.created_at]
+        rows = [session.session_id, session.user_id, _tone_of_voice, _outline, session.step, [], session.created_at, session.created_at]
         self.execute(query, rows)
         return session.session_id
 
@@ -42,6 +43,15 @@ class SessionDB(BaseDuck):
         rows = [session.user_id]
         return self.execute(query, rows)
 
+    def update_whitelist(self, session:SessionWhitelist):
+        query = f"""
+        UPDATE {self.table}
+        SET whitelist = ?, updated_at = ?
+        WHERE session_id = ?;
+        """
+        rows = [session.whitelist, session.created_at, session.session_id]
+        return self.execute(query, rows)
+    
     def update_outline(self, session:SessionToneOut):
         query = f"""
         UPDATE {self.table}

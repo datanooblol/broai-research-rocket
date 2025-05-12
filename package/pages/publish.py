@@ -19,4 +19,5 @@ if st.session_state.session_id:
     refresh_icon(eb1, method="publish")
     generate_icon(eb2, method="publish")
     download_icon(eb3, method="publish")
-    st.write(st.session_state.publish)
+    if st.session_state.publish:
+        st.write(st.session_state.publish)
