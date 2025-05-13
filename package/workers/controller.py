@@ -16,4 +16,4 @@ def make_celery():
 # This will be the shared Celery instance
 celery_app = make_celery()
 
-from . import scrape_worker
+from . import scrape_worker, context_compressor_worker

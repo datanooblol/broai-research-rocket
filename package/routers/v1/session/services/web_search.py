@@ -102,7 +102,7 @@ class WebSearchService:
             context = Context(context=data[url], metadata={"source": url})
             contexts = split_overlap([context])
             all_contexts.extend(contexts)
-        self.knowledgeDB.add_contexts(contexts)
+        self.knowledgeDB.add_contexts(all_contexts)
         self.webDB.update_status([
             UrlRecord(url_id=uc.url_id, url=uc.url, content="", remark="", status=WebStatus.DONE)
             for uc in session.urls

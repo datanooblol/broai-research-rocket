@@ -12,6 +12,33 @@ if "selected_whitelist" not in st.session_state:
 
 system_whitelist = ["medium.com", "geeksforgeeks.org", "towardsdatascience.com"]
 
+def convert_outline_to_markdown(outline):
+    outline_list = []
+    for section in outline.get("sections"):
+        outline_list.append(f"## {section.get('title')}")
+        for question in section.get("questions"):
+            outline_list.append(f"- {question}")
+    return "\n".join(outline_list)
+
+@st.dialog("Generate Outline...")
+def generate_outline():
+    generated_outline = sessionAPI.generate_outline(
+        st.session_state.user_info.get("user_id"),
+        st.session_state.session_id
+    )
+    
+    # st.write(generated_outline)
+    # default_outline = "## Mock Generated Markdown\n- Question 1  - Question 2  \n", key="generated_outline"
+    default_outline = convert_outline_to_markdown(generated_outline)
+    updated_outline = st.text_area("Generated Outline", default_outline, height=360)
+    if st.button("Use this outline", key="generated_outline_update"):
+        set_state("outline", updated_outline)
+        sessionAPI.update_outline(
+            session_id=st.session_state.session_id, 
+            tone_of_voice=st.session_state.tone_of_voice,
+            outline=st.session_state.outline,
+        )
+        st.switch_page("package/pages/outline.py")
 
 @st.dialog("White List")
 def whitelist():
@@ -35,9 +62,12 @@ def whitelist():
         )
         st.rerun()
 
-
-if st.button("White List", key="button_white_list"):
+coll, colr, _ = st.columns([2,2,8])
+if coll.button("White List", key="button_white_list"):
     whitelist()
+
+if colr.button("🤖"):
+    generate_outline()
 
 if st.session_state.session_id:
     response = sessionAPI.get_outline(
@@ -59,10 +89,8 @@ if st.session_state.session_id:
         height=360
     )
 
-# if st.session_state.selected_whitelist:
-#     st.write(st.session_state.selected_whitelist)
-
 _, save_btn_col, research_btn_col = st.columns([10,3,3])
+
 
 if save_btn_col.button("Save/Update"):
     sessionAPI.update_outline(

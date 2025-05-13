@@ -12,6 +12,8 @@ from package.database.utils import (
     get_SessionDB, get_WebDB, get_KnowledgeDB, get_ReRanker
 )
 
+from agents.outline_generator import OutlineGenerator
+
 router = APIRouter(prefix="/v1/session", tags=["session"])
 
 
@@ -49,6 +51,15 @@ async def list_session(
         return {"response": []}
     return {"response": records.to_dict(orient="records")}
 
+@router.post("/generate-outline")
+async def generate_outline(
+    session: SessionInfo,
+    sessionDB=Depends(get_SessionDB)
+):
+    records = sessionDB.get_session(session.session_id)
+    record = records['tone_of_voice'].tolist()[0]
+    og = OutlineGenerator()
+    return og.run({"message":record})
 
 @router.put("/update-outline")
 async def update_outline(
