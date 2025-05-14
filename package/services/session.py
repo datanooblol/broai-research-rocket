@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 import json
 
+
 load_dotenv()  # take environment variables
 ENDPOINT = os.getenv("ENDPOINT")
 
@@ -25,14 +26,15 @@ def get_outline(user_id, session_id):
     response = requests.post(f"{ENDPOINT}/v1/session/outline", headers=headers, json=payload)
     return response.json()
 
-def generate_outline(user_id, session_id):
+
+def generate_outline(instruction):
     headers = {"Content-type": "application/json"}
     payload = {
-        "session_id": session_id,
-        "user_id": user_id,
+        "instruction": instruction,
     }
     response = requests.post(f"{ENDPOINT}/v1/session/generate-outline", headers=headers, json=payload)
     return response.json()
+
 
 def update_outline(session_id, tone_of_voice, outline):
     headers = {"Content-type": "application/json"}
@@ -96,3 +98,4 @@ def create_session(user_id):
     }
     response = requests.post(f"{ENDPOINT}/v1/session/create", headers=headers, json=payload)
     return response.json()["session_id"]
+        

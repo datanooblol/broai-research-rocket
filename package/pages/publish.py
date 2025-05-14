@@ -2,7 +2,7 @@ import streamlit as st
 from package.services.session import DisplayService
 from package.services.utils import set_state
 from package.components.content_icon_bars import refresh_icon, generate_icon, download_icon
-
+from package.services.publish_content import PublishService
 
 st.title("Publish")
 
@@ -18,6 +18,13 @@ if st.session_state.session_id:
     eb1, eb2, eb3, eb4 = st.columns([1, 1, 1, 13])
     refresh_icon(eb1, method="publish")
     generate_icon(eb2, method="publish")
-    download_icon(eb3, method="publish")
+    # download_icon(eb3, method="publish")
+    if eb3.button("🚀", key="publish_content"):
+        service = PublishService()
+        response = service.publish_content(
+            st.session_state.session_id,
+            st.session_state.user_info.get("user_id")
+        )
+        st.toast(f"{response['response']}")
     if st.session_state.publish:
         st.write(st.session_state.publish)

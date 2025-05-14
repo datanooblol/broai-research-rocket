@@ -12,6 +12,7 @@ if "selected_whitelist" not in st.session_state:
 
 system_whitelist = ["medium.com", "geeksforgeeks.org", "towardsdatascience.com"]
 
+
 def convert_outline_to_markdown(outline):
     outline_list = []
     for section in outline.get("sections"):
@@ -20,15 +21,12 @@ def convert_outline_to_markdown(outline):
             outline_list.append(f"- {question}")
     return "\n".join(outline_list)
 
+
 @st.dialog("Generate Outline...")
 def generate_outline():
-    generated_outline = sessionAPI.generate_outline(
-        st.session_state.user_info.get("user_id"),
-        st.session_state.session_id
-    )
-    
-    # st.write(generated_outline)
-    # default_outline = "## Mock Generated Markdown\n- Question 1  - Question 2  \n", key="generated_outline"
+
+    generated_outline = sessionAPI.generate_outline(st.session_state.tone_of_voice)
+
     default_outline = convert_outline_to_markdown(generated_outline)
     updated_outline = st.text_area("Generated Outline", default_outline, height=360)
     if st.button("Use this outline", key="generated_outline_update"):
@@ -39,6 +37,7 @@ def generate_outline():
             outline=st.session_state.outline,
         )
         st.switch_page("package/pages/outline.py")
+
 
 @st.dialog("White List")
 def whitelist():
@@ -61,6 +60,7 @@ def whitelist():
             st.session_state.selected_whitelist
         )
         st.rerun()
+
 
 coll, colr, _ = st.columns([2,2,8])
 if coll.button("White List", key="button_white_list"):
@@ -100,9 +100,11 @@ if save_btn_col.button("Save/Update"):
     )
     st.toast("Outline saved/updated successfully")
 
+
 def quick_time_log(start, message):
     duration = time.perf_counter() - start
     st.success(f"{message}: {duration:.0f} seconds")
+
 
 @st.dialog("Research...")
 def research_dialog():
@@ -133,8 +135,11 @@ def research_dialog():
         quick_time_log(start_revise, response["response"])
 
     quick_time_log(start_research, "Researched successfully")
-    if st.button("Go to Publish"):
-        st.switch_page("package/pages/publish.py")
+    # this considered a bug b/c it can't move to specified page directly, it keeps running all from the top first
+    # this issue can be fixed with the proper frontend framework
+    # if st.button("Go to Publish"):
+    #     st.switch_page("package/pages/publish.py")
+
 
 if research_btn_col.button("Research"):
     research_dialog()

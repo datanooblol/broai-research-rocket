@@ -37,7 +37,6 @@ def sign_out():
 
 def sign_in_off():
     s, s1, s2 = st.columns([10,2,2])
-    # st.button("➕ Sign Up"): pass
     if st.session_state.user_info is None:
         if s1.button("Sign In"):
             sign_in()
@@ -51,7 +50,9 @@ def sign_in_off():
         username = st.session_state.user_info.get("username")
         s.write(f"Hello {username}")
 
+
 sign_in_off()
+
 
 pages = {
     "Your Account": [
@@ -64,10 +65,14 @@ pages = {
         st.Page("package/pages/enrich.py", title="Enrich"),
         st.Page("package/pages/publish.py", title="Publish"),
     ],
+    "Brain Bro": [
+        st.Page("package/pages/brain_list.py", title="Brain List"),
+        st.Page("package/pages/brain.py", title="Brain"),
+    ]
 }
 
 with st.sidebar:
-    st.slider("Url Limit", 0, 5, 3, key="n_url")
+    # st.slider("Url Limit", 0, 5, 3, key="n_url")
     st.slider("Retrieve Limit", 5, 10, 7, key="n_retrieve")
     st.slider("Rerank Limit", 3, 7, 5, key="n_rerank")
 

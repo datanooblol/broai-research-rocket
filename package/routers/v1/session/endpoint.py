@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from package.database.session.model import (
     SessionInfo, SessionToneOut, SessionParsedOutline, SessionRetrieve, SessionWhitelist
 )
+from package.database.brain.model import BrainRecord
 from package.utils.parse_outline import parse_outline
 import json
 from package.routers.v1.session.services.web_search import WebSearchService
@@ -9,10 +10,11 @@ from package.routers.v1.session.services.retrieve import RetrieveService
 from package.routers.v1.session.services.enrich import EnrichService
 from package.routers.v1.session.services.publish import PublishService
 from package.database.utils import (
-    get_SessionDB, get_WebDB, get_KnowledgeDB, get_ReRanker
+    get_SessionDB, get_WebDB, get_KnowledgeDB, get_BrainDB, get_ReRanker
 )
-
 from agents.outline_generator import OutlineGenerator
+from pydantic import BaseModel, Field
+
 
 router = APIRouter(prefix="/v1/session", tags=["session"])
 
@@ -51,15 +53,23 @@ async def list_session(
         return {"response": []}
     return {"response": records.to_dict(orient="records")}
 
+
+class InstructionOutline(BaseModel):
+    instruction: str = Field()
+
+
 @router.post("/generate-outline")
 async def generate_outline(
-    session: SessionInfo,
-    sessionDB=Depends(get_SessionDB)
+    instruction: InstructionOutline
+    # session: SessionInfo,
+    # sessionDB=Depends(get_SessionDB)
 ):
-    records = sessionDB.get_session(session.session_id)
-    record = records['tone_of_voice'].tolist()[0]
+    # records = sessionDB.get_session(session.session_id)
+    # record = records['tone_of_voice'].tolist()[0]
     og = OutlineGenerator()
-    return og.run({"message":record})
+    # return og.run({"message":record})
+    return og.run({"message": instruction.instruction})
+
 
 @router.put("/update-outline")
 async def update_outline(
@@ -141,7 +151,7 @@ async def research_publish(
 ):
     service = PublishService(sessionDB)
     service.publish(session.session_id)
-    return {"response": "publishedsuccessfully"}
+    return {"response": "published successfully"}
 
 
 @router.post("/outline")
@@ -179,6 +189,7 @@ async def retrieve_enrich(
         return json.loads(record)
     return {"error": "not enrich"}
 
+
 @router.post("/publish")
 async def retrieve_publish(
     session: SessionInfo,
@@ -186,3 +197,15 @@ async def retrieve_publish(
 ):
     record = sessionDB.get_session(session.session_id).to_dict(orient="records")[0].get("publish")
     return {"publish": record}
+
+
+@router.post("/content/publish")
+async def publish_content(
+    session: SessionInfo,
+    sessionDB=Depends(get_SessionDB),
+    brainDB=Depends(get_BrainDB)
+):
+    content = sessionDB.get_session(session.session_id)['publish'].tolist()[0]
+    brain = BrainRecord(user_id=session.user_id, session_id=session.session_id, content=content)
+    brainDB.publish_content(brain)
+    return {"response": "content published successfully"}
