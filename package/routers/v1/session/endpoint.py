@@ -206,6 +206,6 @@ async def publish_content(
     brainDB=Depends(get_BrainDB)
 ):
     content = sessionDB.get_session(session.session_id)['publish'].tolist()[0]
-    brain = BrainRecord(user_id=session.user_id, session_id=session.session_id, content=content)
+    brain = BrainRecord(user_id=session.user_id, username=session.username, session_id=session.session_id, content=content)
     brainDB.publish_content(brain)
     return {"response": "content published successfully"}

@@ -6,25 +6,32 @@ from package.services.publish_content import PublishService
 
 st.title("Publish")
 
-if "publish" not in st.session_state:
-    set_state("publish", None)
-if st.session_state.session_id:
-    service = DisplayService()
-    response = service.publish(
-        session_id=st.session_state.session_id,
-        user_id=st.session_state.user_info.get("user_id")
-    )
-    set_state("publish", response.get("publish"))
-    eb1, eb2, eb3, eb4 = st.columns([1, 1, 1, 13])
-    refresh_icon(eb1, method="publish")
-    generate_icon(eb2, method="publish")
-    # download_icon(eb3, method="publish")
-    if eb3.button("🚀", key="publish_content"):
-        service = PublishService()
-        response = service.publish_content(
-            st.session_state.session_id,
-            st.session_state.user_info.get("user_id")
+
+def main():
+    if "publish" not in st.session_state:
+        set_state("publish", None)
+    if st.session_state.session_id:
+        service = DisplayService()
+        response = service.publish(
+            session_id=st.session_state.session_id,
+            user_id=st.session_state.user_info.get("user_id")
         )
-        st.toast(f"{response['response']}")
-    if st.session_state.publish:
-        st.write(st.session_state.publish)
+        set_state("publish", response.get("publish"))
+        eb1, eb2, eb3, eb4 = st.columns([1, 1, 1, 13])
+        refresh_icon(eb1, method="publish")
+        generate_icon(eb2, method="publish")
+        # download_icon(eb3, method="publish")
+        if eb3.button("🚀", key="publish_content"):
+            service = PublishService()
+            response = service.publish_content(
+                st.session_state.session_id,
+                st.session_state.user_info.get("user_id"),
+                st.session_state.user_info.get("username"),
+            )
+            st.toast(f"{response['response']}")
+        if st.session_state.publish:
+            st.write(st.session_state.publish)
+
+
+if st.session_state.user_info:
+    main()

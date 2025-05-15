@@ -10,6 +10,7 @@ class BrainDB(BaseDuck):
         CREATE TABLE IF NOT EXISTS {self.table} (
             brain_id VARCHAR PRIMARY KEY,
             user_id VARCHAR,
+            username VARCHAR,
             session_id VARCHAR,
             content VARCHAR,
             created_at TIMESTAMP,
@@ -24,8 +25,8 @@ class BrainDB(BaseDuck):
         return self.execute(query, rows)
 
     def insert_content(self, brain: BrainRecord):
-        query = f"INSERT INTO {self.table} (brain_id, user_id, session_id, content, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
-        rows = [brain.brain_id, brain.user_id, brain.session_id, brain.content, brain.created_at, brain.created_at]
+        query = f"INSERT INTO {self.table} (brain_id, user_id, username, session_id, content, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        rows = [brain.brain_id, brain.user_id, brain.username, brain.session_id, brain.content, brain.created_at, brain.created_at]
         self.execute(query, param=rows)
     
     def publish_content(self, brain: BrainRecord):

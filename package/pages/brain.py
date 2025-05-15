@@ -7,7 +7,6 @@ query_params = st.query_params  # works in Streamlit v1.32+
 session_id = query_params.get("session_id")
 
 if session_id:
-    # st.write(f"🔍 Showing blog post: {session_id}")
     service = BrainService()
     response = service.get_content(session_id)
     content = response[0]

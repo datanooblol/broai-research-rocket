@@ -1,38 +1,66 @@
 import streamlit as st
 from package.services.brain import BrainService
 
-# session_id = st.session_state.session_id
-
 style = """
 <style>
-.card {
-    background-color: #f9f9f9;
-    border-radius: 12px;
-    padding: 16px;
-    margin: 12px 0;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-}
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
+    .blog-card {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        text-decoration: none;
+        color: black;
+        display: block;
+        transition: box-shadow 0.3s ease;
+    }
+    .blog-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .user-info {
+        font-weight: bold;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+    }
+    .user-info img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+    .blog-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    .blog-summary {
+        font-size: 14px;
+        color: #555;
+    }
 </style>
-""".strip()
+"""
 
-def get_href(session_id, title):
+
+def get_href(session_id, username, title, content):
     href = f"""
-    <a href="./brain?session_id={session_id}" target="_blank" class="card">
-        <h4>{title}</h4>
-        <p>Click to view this published article.</p>
+    <a href="./brain?session_id={session_id}" target="_blank" class="blog-card">
+        <div class="user-info">
+        <span style="font-size: 20px; margin-right: 8px;">👤</span>
+            {username}
+        </div>
+        <div class="blog-title">
+            {title}
+        </div>
+        <div class="blog-summary">
+            {content}
+        </div>
     </a>
     """.strip()
     return href
-# st.html(style+href)
+
+
 st.title("Brain Bro")
 
 # st.write(BrainService().list_contents())
@@ -40,6 +68,9 @@ st.title("Brain Bro")
 for content in BrainService().list_contents():
     c = content['content']
     session_id = content['session_id']
-    title = c.split("##")[1]
-    st.html(style+get_href(session_id, title))
-    # st.write(f"{content['content'][:150].replace('#', '')}...")
+    username = content["username"]
+    # chunks = c.split("##")
+    chunks = c.replace("#", "").split("\n")
+    title = f"{chunks[0][:150]}..." if len(chunks[0]) > 150 else chunks[0]
+    content = f"{chunks[2][:150]}..."
+    st.html(style+get_href(session_id, username, title, content))

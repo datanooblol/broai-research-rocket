@@ -31,6 +31,7 @@ class SessionBase(BaseModel):
 class SessionInfo(SessionBase):
     session_id:str = Field(default_factory=lambda x: str(uuid4()))
     user_id:str
+    username:str = Field(default=None)
 
 class SessionRetrieve(SessionInfo):
     n_retrieve:int

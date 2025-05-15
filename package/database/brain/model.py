@@ -11,5 +11,6 @@ class BrainBase(BaseModel):
 class BrainRecord(BrainBase):
     brain_id:str = Field(default_factory=lambda: str(uuid4()))
     user_id:str = Field(default=None)
+    username:str = Field(default=None)
     session_id:str = Field(default=None)
     content:str = Field(default=None)
