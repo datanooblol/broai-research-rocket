@@ -4,11 +4,16 @@ from broai.experiments.bro_agent import BroAgent
 from pydantic import BaseModel, Field
 from typing import Tuple, List, Dict, Any, Optional
 from broai.prompt_management.utils import get_input
-# you can use any model sharing the same methods: .run, .SystemMessage, .UserMessage, .AIMessage
 from broai.llm_management.ollama import BedrockOllamaChat
+import os
+
 bedrock_model = BedrockOllamaChat(
     model_name="us.meta.llama3-3-70b-instruct-v1:0",
     temperature=0,
+    region_name=os.getenv("AWS_BEDROCK_REGION"),
+    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+    aws_session_token=os.getenv("AWS_SESSION_TOKEN"),
 )
 
 class InputMessage(BaseModel):

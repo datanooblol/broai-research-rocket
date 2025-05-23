@@ -2,10 +2,14 @@ import requests
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel
 from urllib.parse import urlencode, urlparse
+import os
+
+ENDPOINT = os.getenv("ENDPOINT")
 
 # Equivalent to `getSearxngApiEndpoint()` in TypeScript
 def get_searxng_api_endpoint() -> str:
-    return "http://localhost:8080"  # Or your Docker container address
+    # return f"http://searxng:8080"  # Or your Docker container address
+    return ENDPOINT  # Or your Docker container address
 
 
 class SearxngSearchOptions(BaseModel):
