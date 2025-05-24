@@ -1,7 +1,9 @@
-# Note
+# This is a prototype-4
 
-in .env:
-```text
-DB_NAME=./research-rocket.db
-ENDPOINT=http://localhost:8000
-```
+## Current:  
+- update the project structure: backend, frontend
+- update environment variables of each stack  
+
+## Next:
+- update stack from frontend streamlit to nextjs for better ux
+- add saving to pdf functionality
