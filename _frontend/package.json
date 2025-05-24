@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@blocknote/core": "^0.31.1",
+    "@blocknote/mantine": "^0.31.1",
+    "@blocknote/react": "^0.31.1",
     "@radix-ui/react-slot": "^1.2.3",
     "ci": "^2.3.0",
     "class-variance-authority": "^0.7.1",
@@ -17,8 +20,10 @@
     "next": "15.1.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0",
     "tailwind-merge": "^3.3.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
