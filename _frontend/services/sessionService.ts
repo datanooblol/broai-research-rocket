@@ -79,3 +79,57 @@ export async function fetchKnowledge(session_id: string) {
   const result = await res.json();
   return result;
 }
+
+export async function fetchSessionEnrich(session_id: string) {
+  const res = await fetch('http://localhost:8000/v1/session/enrich', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ session_id }),
+  })
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch enrich content: ${res.statusText}`)
+  }
+
+  return res.json()
+}
+
+export async function fetchPublishContent(sessionId: string) {
+  const response = await fetch('http://localhost:8000/v1/session/publish', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ session_id: sessionId }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch publish content: ${response.statusText}`);
+  }
+
+  return response.json(); // should return { publish: "publish text" }
+}
+
+// /services/sessionService.ts
+export async function fetchBroBrains() {
+  const res = await fetch("http://localhost:8000/v1/brain")
+  if (!res.ok) throw new Error("Failed to fetch brains")
+  return res.json()
+}
+
+export async function fetchBrain(sessionId: string) {
+  const response = await fetch('http://localhost:8000/v1/brain/get-content', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ session_id: sessionId }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch publish content: ${response.statusText}`);
+  }
+  return response.json();
+}

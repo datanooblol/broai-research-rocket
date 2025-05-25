@@ -12,7 +12,7 @@ import { BlockNoteView } from '@blocknote/mantine'
 import { useCreateBlockNote } from '@blocknote/react'
 import '@blocknote/mantine/style.css'
 
-import { Textarea } from '@/components/ui/textarea'
+import { AutoResizeTextarea } from '@/components/AutoResizeTextarea'
 
 export default function OutlinePage() {
   const { session_id } = useParams()
@@ -46,6 +46,7 @@ export default function OutlinePage() {
         setTone(res.tone_of_voice || '')
         const blocks = await editor.tryParseMarkdownToBlocks(res.outline || '')
         editor.replaceBlocks(editor.document, blocks)
+        // console.log(editor.document)
       } catch (err: any) {
         setError(err.message || 'Failed to load outline')
       } finally {
@@ -74,28 +75,26 @@ export default function OutlinePage() {
 
   if (loading) return <p className="p-4">Loading...</p>
   if (error) return <p className="p-4 text-red-500">{error}</p>
-
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-      <div>
-        <label htmlFor="tone" className="block text-lg font-semibold mb-2">
-          Tone of Voice
-        </label>
-        <Textarea
-          id="tone"
-          value={tone}
-          onChange={(e) => setTone(e.target.value)}
-          rows={3}
-          placeholder="Enter tone of voice..."
-        />
-      </div>
 
-      <div>
-        <label className="block text-lg font-semibold mb-2">
-          Outline
-        </label>
-        <BlockNoteView editor={editor} editable={true} onChange={handleEditorChange} />
+      <div className='max-w-5xl mx-auto px-4 py-8'>
+        <div className="w-full max-w-full overflow-x-hidden">
+          <label htmlFor="tone" className="block text-lg font-semibold mb-2">
+            Tone of Voice
+          </label>
+           <AutoResizeTextarea
+             id="tone"
+             value={tone}
+             onChange={(e) => setTone(e.target.value)}
+             minRows={3}
+             placeholder="Enter tone of voice..."
+             className="w-full"
+           />          
+        </div>
+        <div className="w-full max-w-full overflow-x-hidden">
+          <label className="block text-lg font-semibold mb-2">Outline</label>          
+          <BlockNoteView editor={editor} editable={true} onChange={handleEditorChange} />
+        </div>
       </div>
-    </div>
-  )
+  )  
 }

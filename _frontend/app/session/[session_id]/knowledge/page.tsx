@@ -147,6 +147,14 @@ export default function KnowledgePage() {
                                   <div className="space-y-1">
                                     <p className="text-sm text-muted-foreground">Section: {section.section}</p>
                                     <p className="text-base font-medium">Question: {question.question}</p>
+                                    <a
+                                      href={source.source}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-600 hover:underline break-words text-sm"
+                                    >
+                                      {source.source}
+                                    </a>                                    
                                   </div>
                                 </DialogTitle>
                                 <DialogDescription></DialogDescription>
