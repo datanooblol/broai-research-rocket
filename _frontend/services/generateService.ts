@@ -1,6 +1,6 @@
-export type GenerateEndpoint = 'generate-outline';
+export type GenerateEndpointType = 'generate-outline';
 interface GenerateProps {
-    endpoint: GenerateEndpoint;
+    endpoint: GenerateEndpointType;
     prompt: string;
 }
 

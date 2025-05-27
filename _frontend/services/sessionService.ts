@@ -171,3 +171,44 @@ export async function publishBrain({session_id, user_id, username}: PublishProps
 
   return response.json();
 }
+
+export async function fetchWhitelist(session_id: string): Promise<string[]> {
+  const response = await fetch('http://localhost:8000/v1/session/whitelist', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ session_id })
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch whitelist: ${response.statusText}`)
+  }
+
+  const data = await response.json()
+  if (Array.isArray(data.whitelist) && data.whitelist.length > 0) {
+    return data.whitelist
+  }
+
+  return ['all']
+}
+
+export async function updateWhitelist(
+  session_id: string,
+  whitelist: string[]
+): Promise<string> {
+  const response = await fetch('http://localhost:8000/v1/session/update-whitelist', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ session_id, whitelist })
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to update whitelist: ${response.statusText}`)
+  }
+
+  const data = await response.json()
+  return data.response || 'Unknown response'
+}

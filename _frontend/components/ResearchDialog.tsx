@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { FlaskConical } from 'lucide-react'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { researchAPI } from '@/services/researchService'
 
 type ResearchDialogProps = {
@@ -25,11 +26,15 @@ type StepResult = {
 }
 
 type ResearchEndpoint = 'search' | 'retrieve' | 'enrich' | 'publish'
+type Destination = 'knowledge' | 'enrich' | 'publish'
 
 export function ResearchDialog({ session_id }: ResearchDialogProps) {
   const [loading, setLoading] = useState(false)
+  const [allSucceeded, setAllSucceeded] = useState(false)
   const [results, setResults] = useState<StepResult[]>([])
   const [totalTime, setTotalTime] = useState<number | null>(null)
+  const [destination, setDestination] = useState<Destination>('knowledge')
+  const router = useRouter()
 
   const handleRunWorkflow = async () => {
     setLoading(true)
@@ -74,8 +79,14 @@ export function ResearchDialog({ session_id }: ResearchDialogProps) {
     const totalEnd = performance.now()
     setTotalTime(totalEnd - totalStart)
     setLoading(false)
+
+    // Navigate only if all steps succeeded
+    setAllSucceeded(stepResults.length === steps.length && stepResults.every((r) => r.status === 'success'))
   }
 
+  const handleRedirectPage = (endpoint: string) => {
+    router.push(`/session/${session_id}/${endpoint}`)
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -111,8 +122,15 @@ export function ResearchDialog({ session_id }: ResearchDialogProps) {
             </div>
           )}
         </div>
+        {allSucceeded && (
+        <div className="flex flex-row justify-end gap-4">
+          <Button onClick={()=>handleRedirectPage("knowledge")}>knowledge</Button>
+          <Button onClick={()=>handleRedirectPage("enrich")}>enrich</Button>
+          <Button onClick={()=>handleRedirectPage("publish")}>publish</Button>
+        </div>
+
+        )}
       </DialogContent>
     </Dialog>
   )
 }
-

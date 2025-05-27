@@ -61,9 +61,12 @@ def search_searxng(query: str, whitelist: List[str] = None, opts: Optional[Searx
     suggestions = []
     for result in data["results"]:
         url = result.get("url", None)
+        domain = None
         if url and url.startswith("https"):
             parsed_url = urlparse(url)
             domain = parsed_url.netloc
+        if domain is None:
+            continue
         if domain.startswith("www."):
             domain = domain[4:]
         if whitelist:

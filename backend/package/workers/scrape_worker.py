@@ -16,3 +16,4 @@ def scrape_worker(session_id: str, url: str):
     text = clean_up_markdown_link(text)
     with open(file_path, "w") as f:
         json.dump({url: text}, f, indent=2)
+    return url

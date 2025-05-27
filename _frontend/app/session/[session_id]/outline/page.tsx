@@ -1,31 +1,28 @@
 // app/session/[session_id]/outline/page.tsx
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { fetchSessionOutline, saveSessionOutline } from '@/services/sessionService'
 import { blocksToMarkdownString } from '@/lib/blocknote/utils'
 import debounce from 'lodash/debounce'
-import { BrainCircuit } from 'lucide-react'
 import '@blocknote/core/fonts/inter.css'
 import { BlockNoteView } from '@blocknote/mantine'
 import { useCreateBlockNote } from '@blocknote/react'
 import '@blocknote/mantine/style.css'
 import { ResearchDialog } from '@/components/ResearchDialog'
 import { AutoResizeTextarea } from '@/components/AutoResizeTextarea'
-import { Button } from '@/components/ui/button'
 import { GenerateDialog } from '@/components/GenerateDialog'
 
 export default function OutlinePage() {
   const { session_id } = useParams()
+  const editor = useCreateBlockNote()
+
   const [tone, setTone] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-
-  const editor = useCreateBlockNote()
   const [hasChanges, setHasChanges] = useState(false)
 
-  // Debounced save function
   const debouncedSave = useRef(
     debounce(async (toneText: string) => {
       const markdown = blocksToMarkdownString(editor.document)
@@ -41,24 +38,23 @@ export default function OutlinePage() {
     }, 1500)
   ).current
 
-  useEffect(() => {
-    const loadOutline = async () => {
-      try {
-        const res = await fetchSessionOutline(session_id as string)
-        setTone(res.tone_of_voice || '')
-        const blocks = await editor.tryParseMarkdownToBlocks(res.outline || '')
-        editor.replaceBlocks(editor.document, blocks)
-        // console.log(editor.document)
-      } catch (err: any) {
-        setError(err.message || 'Failed to load outline')
-      } finally {
-        setLoading(false)
-      }
+  // ✅ Expose loadOutline via useCallback so we can pass it around
+  const loadOutline = useCallback(async () => {
+    try {
+      const res = await fetchSessionOutline(session_id as string)
+      setTone(res.tone_of_voice || '')
+      const blocks = await editor.tryParseMarkdownToBlocks(res.outline || '')
+      editor.replaceBlocks(editor.document, blocks)
+    } catch (err: any) {
+      setError(err.message || 'Failed to load outline')
+    } finally {
+      setLoading(false)
     }
-
-    loadOutline()
   }, [session_id, editor])
 
+  useEffect(() => {
+    loadOutline()
+  }, [loadOutline])
   // Save when tone changes
   useEffect(() => {
     if (!loading) {
@@ -72,6 +68,14 @@ export default function OutlinePage() {
     if (!loading) {
       setHasChanges(true)
       debouncedSave(tone)
+    }
+  }
+
+  const handleSystemPromptChange = (newTone: string) => {
+    if (!loading){
+      setTone(newTone)
+      setHasChanges(true)
+      debouncedSave(newTone)
     }
   }
 
@@ -89,16 +93,18 @@ export default function OutlinePage() {
               session_id={session_id as string}
               endpoint="generate-outline"
               prompt={tone}
+              onSaved={loadOutline}
             />
           </div>
            <AutoResizeTextarea
              id="tone"
              value={tone}
-             onChange={(e) => setTone(e.target.value)}
+             onChange={(e) => handleSystemPromptChange(e.target.value)}
              minRows={3}
              placeholder="Enter tone of voice..."
              className="w-full"
              />          
+            <div>{tone}</div>
         </div>
         <div className="flex flex-col w-full max-w-full overflow-x-hidden gap-4">
           <div className='flex flex-row justify-between items-center'>
@@ -110,3 +116,4 @@ export default function OutlinePage() {
       </div>
   )  
 }
+
