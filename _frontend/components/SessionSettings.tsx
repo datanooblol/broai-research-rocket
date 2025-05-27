@@ -1,4 +1,5 @@
 // components/SessionSettings.tsx
+// fix this one by factoring out whitelist component, n_retrieve, n_rerank as another component, and make them be able to fetch data as well as update data
 'use client'
 
 import { useState } from 'react'
@@ -13,6 +14,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { Settings } from "lucide-react"
+
+
+type WhitelistKey = 'option1' | 'option2' | 'option3'
 
 export function SettingsDialog() {
   const [nRetrieve, setNRetrieve] = useState(10)
@@ -23,13 +28,15 @@ export function SettingsDialog() {
     option3: false
   })
 
-  const handleWhitelistChange = (key: string) => {
+  const handleWhitelistChange = (key: WhitelistKey) => {
     setWhitelist(prev => ({ ...prev, [key]: !prev[key] }))
   }
 
   return (
     <Dialog>
-      <DialogTrigger className="text-sm text-blue-600 underline">Settings</DialogTrigger>
+      <DialogTrigger className="text-sm text-black">
+        <Settings className="w-4 h-4 inline-block mr-1" />
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Session Settings</DialogTitle>

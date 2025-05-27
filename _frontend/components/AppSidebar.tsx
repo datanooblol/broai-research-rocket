@@ -12,7 +12,8 @@ import {
   SidebarMenuItem,
   SidebarMenuButton
 } from "@/components/ui/sidebar"
-import { Rocket, LayoutDashboard, BrainCircuit } from "lucide-react"
+import { Rocket, LayoutDashboard, BrainCircuit, LogOut } from "lucide-react"
+import { Button } from "./ui/button"
 
 export function AppSidebar() {
   return (
@@ -39,6 +40,12 @@ export function AppSidebar() {
                   <a href="/bro-brain" className="flex items-center gap-2">
                     <BrainCircuit className="w-4 h-4" />
                     <span>Bro Brain</span>
+                  </a>
+                </SidebarMenuButton>
+                <SidebarMenuButton asChild>
+                  <a href="/login" className="flex items-center gap-2">
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span> 
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>

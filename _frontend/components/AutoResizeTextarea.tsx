@@ -21,7 +21,9 @@ export const AutoResizeTextarea = React.forwardRef<
       minRows={minRows}
       maxRows={maxRows}
       className={cn(
-        'w-full min-w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none',
+          'w-full min-w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground',
+          'focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-200',
+          'resize-none',
         className
       )}
       {...props}

@@ -179,7 +179,7 @@ services:
     # stdin_open: true  # Keep the standard input open, allows interactive access to the container
     # tty: true  # Allocates a pseudo-TTY, useful for debugging and keeping the terminal interactive      
     command: >
-      sh -c "npm run dev"
+      sh -c "npm install && npm run dev"
 
 networks:
   appnet:

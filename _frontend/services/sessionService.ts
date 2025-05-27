@@ -19,6 +19,23 @@ export async function listSessions(user_id: string) {
   return res.json() // { response: [...] }
 }
 
+export async function createSession(user_id: string) {
+  const res = await fetch(`http://localhost:8000/v1/session/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ user_id }),
+  })
+
+  if (!res.ok) {
+    const error = await res.json()
+    throw new Error(error.message || 'Failed to create session')
+  }
+
+  return res.json() // { response: { session_id, ... } }
+}
+
 // services/sessionService.ts
 export async function fetchSessionOutline(session_id: string) {
   const res = await fetch('http://localhost:8000/v1/session/outline', {
@@ -131,5 +148,26 @@ export async function fetchBrain(sessionId: string) {
   if (!response.ok) {
     throw new Error(`Failed to fetch publish content: ${response.statusText}`);
   }
+  return response.json();
+}
+
+interface PublishProps {
+  session_id: string;
+  user_id: string;
+  username: string;
+}
+export async function publishBrain({session_id, user_id, username}: PublishProps) {
+  const response = await fetch('http://localhost:8000/v1/session/content/publish', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ session_id: session_id, user_id: user_id, username: username}),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to publish brain: ${response.statusText}`);
+  }
+
   return response.json();
 }

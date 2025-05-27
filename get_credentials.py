@@ -16,7 +16,7 @@ def main():
             "AWS_ACCESS_KEY_ID": credentials.access_key,
             "AWS_SECRET_ACCESS_KEY": credentials.secret_key,
             "AWS_SESSION_TOKEN": credentials.token,  # Optional: if using temporary credentials
-            "AWS_DEFAULT_REGION": session.region_name # fallback region,
+            "AWS_DEFAULT_REGION": session.region_name, # fallback region,
             "AWS_BEDROCK_REGION": "us-west-2"  # fallback region
         }
 

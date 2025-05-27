@@ -77,10 +77,6 @@ export default function KnowledgePage() {
 
   return (
     <div className="max-w-5xl mx-auto p-4 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold mb-4">Knowledge Page</h1>
-      </div>
-
       <div className="mb-6">
         <Label htmlFor="filter">Filter by context</Label>
         <Input
@@ -109,7 +105,7 @@ export default function KnowledgePage() {
                           href={source.source}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline break-words"
+                          className="text-blue-600 hover:underline truncate max-w-xs inline-block"
                         >
                           {source.source}
                         </a>
@@ -119,7 +115,7 @@ export default function KnowledgePage() {
                       {source.contexts.map((context: any, cIdx: number) => (
                         <div
                           key={cIdx}
-                          className="text-sm flex items-center justify-between border rounded p-2"
+                          className="text-sm flex items-center justify-between border-b border-gray-200 rounded p-2"
                         >
                           <span className="truncate max-w-[75%]">
                             {context.context.slice(0, 100)}...
