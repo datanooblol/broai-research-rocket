@@ -1,3 +1,4 @@
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 type ResearchEndpoint = 'search' | 'retrieve' | 'enrich' | 'publish'
 
 interface ResearchProps {
@@ -24,7 +25,7 @@ export async function researchAPI({
     body.n_rerank = n_rerank
   }
 
-  const res = await fetch(`http://localhost:8000/v1/session/research/${endpoint}`, {
+  const res = await fetch(`${baseUrl}/v1/session/research/${endpoint}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

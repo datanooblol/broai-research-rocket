@@ -1,3 +1,5 @@
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export type GenerateEndpointType = 'generate-outline';
 interface GenerateProps {
     endpoint: GenerateEndpointType;
@@ -12,7 +14,7 @@ export async function generateAPI({
     if (endpoint === 'generate-outline') {
         body.instruction = prompt;
     }
-    const res = await fetch(`http://localhost:8000/v1/session/${endpoint}`, {
+    const res = await fetch(`${baseUrl}/v1/session/${endpoint}`, {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json',

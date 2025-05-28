@@ -1,9 +1,9 @@
 // services/sessionService.ts
-
 import { transformKnowledgeResponse } from '@/lib/transform/knowledgeResponse';
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function listSessions(user_id: string) {
-  const res = await fetch(`http://localhost:8000/v1/session/list`, {
+  const res = await fetch(`${baseUrl}/v1/session/list`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ export async function listSessions(user_id: string) {
 }
 
 export async function createSession(user_id: string) {
-  const res = await fetch(`http://localhost:8000/v1/session/create`, {
+  const res = await fetch(`${baseUrl}/v1/session/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ export async function createSession(user_id: string) {
 
 // services/sessionService.ts
 export async function fetchSessionOutline(session_id: string) {
-  const res = await fetch('http://localhost:8000/v1/session/outline', {
+  const res = await fetch(`${baseUrl}/v1/session/outline`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ export async function saveSessionOutline(session_id: string, data: {
   tone_of_voice: string
   outline: string
 }) {
-  const res = await fetch(`http://localhost:8000/v1/session/update-outline`, {
+  const res = await fetch(`${baseUrl}/v1/session/update-outline`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ export async function saveSessionOutline(session_id: string, data: {
 
 
 export async function fetchKnowledge(session_id: string) {
-  const res = await fetch('http://localhost:8000/v1/session/knowledge', {
+  const res = await fetch(`${baseUrl}http://localhost:8000/v1/session/knowledge`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ export async function fetchKnowledge(session_id: string) {
 }
 
 export async function fetchSessionEnrich(session_id: string) {
-  const res = await fetch('http://localhost:8000/v1/session/enrich', {
+  const res = await fetch(`${baseUrl}/v1/session/enrich`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ export async function fetchSessionEnrich(session_id: string) {
 }
 
 export async function fetchPublishContent(sessionId: string) {
-  const response = await fetch('http://localhost:8000/v1/session/publish', {
+  const response = await fetch(`${baseUrl}/v1/session/publish`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -131,13 +131,13 @@ export async function fetchPublishContent(sessionId: string) {
 
 // /services/sessionService.ts
 export async function fetchBroBrains() {
-  const res = await fetch("http://localhost:8000/v1/brain")
+  const res = await fetch(`${baseUrl}/v1/brain`)
   if (!res.ok) throw new Error("Failed to fetch brains")
   return res.json()
 }
 
 export async function fetchBrain(sessionId: string) {
-  const response = await fetch('http://localhost:8000/v1/brain/get-content', {
+  const response = await fetch(`${baseUrl}/v1/brain/get-content`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ interface PublishProps {
   username: string;
 }
 export async function publishBrain({session_id, user_id, username}: PublishProps) {
-  const response = await fetch('http://localhost:8000/v1/session/content/publish', {
+  const response = await fetch(`${baseUrl}/v1/session/content/publish`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -173,7 +173,7 @@ export async function publishBrain({session_id, user_id, username}: PublishProps
 }
 
 export async function fetchWhitelist(session_id: string): Promise<string[]> {
-  const response = await fetch('http://localhost:8000/v1/session/whitelist', {
+  const response = await fetch(`${baseUrl}/v1/session/whitelist`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -197,7 +197,7 @@ export async function updateWhitelist(
   session_id: string,
   whitelist: string[]
 ): Promise<string> {
-  const response = await fetch('http://localhost:8000/v1/session/update-whitelist', {
+  const response = await fetch(`${baseUrl}/v1/session/update-whitelist`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
