@@ -1,27 +1,4 @@
-// // hooks/useAuthStore.ts
-// import { create } from 'zustand'
 
-// type User = {
-//   username: string
-//   user_id: string
-// }
-
-// type AuthStore = {
-//   user: User | null
-//   session_id: string | null
-//   setUser: (user: User) => void
-//   setSessionId: (sessionId: string) => void
-// }
-
-// export const useAuthStore = create<AuthStore>((set) => ({
-//   user: null,
-//   session_id: null,
-//   setUser: (user) => {
-//     set({ user })
-//     localStorage.setItem('user', JSON.stringify(user))
-//   },
-//   setSessionId: (sessionId) => set({ session_id: sessionId }),
-// }))
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 

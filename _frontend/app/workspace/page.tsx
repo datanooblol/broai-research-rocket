@@ -12,6 +12,7 @@ export default function WorkspacePage() {
   const [sessions, setSessions] = useState<any[]>([])
   const [error, setError] = useState('')
   const router = useRouter()
+
   useEffect(() => {
     const fetchSessions = async () => {
       if (!user?.user_id) return

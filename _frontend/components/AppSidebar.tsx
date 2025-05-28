@@ -13,9 +13,14 @@ import {
   SidebarMenuButton
 } from "@/components/ui/sidebar"
 import { Rocket, LayoutDashboard, BrainCircuit, LogOut } from "lucide-react"
-import { Button } from "./ui/button"
+import { useAuthStore } from "@/hooks/useAuthStore"
 
 export function AppSidebar() {
+  const logout = useAuthStore((state) => state.logout)
+  const handleLogout = () => {
+    logout()
+    console.log("Logout clicked");
+  }
   return (
     <Sidebar>
       <SidebarHeader />
@@ -42,7 +47,7 @@ export function AppSidebar() {
                     <span>Bro Brain</span>
                   </a>
                 </SidebarMenuButton>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild onClick={handleLogout}>
                   <a href="/login" className="flex items-center gap-2">
                     <LogOut className="w-4 h-4" />
                     <span>Logout</span> 

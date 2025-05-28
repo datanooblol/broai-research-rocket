@@ -15,4 +15,4 @@ echo "🚀 Installing recommended NVIDIA driver (nvidia-driver-535)..."
 sudo apt install -y nvidia-driver-535
 
 echo "🔁 Rebooting to activate the driver..."
-sudo reboot
+# sudo reboot

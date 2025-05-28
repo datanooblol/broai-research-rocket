@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import SearchBar from '@/components/SearchBar'
 
 export default function KnowledgePage() {
   const params = useParams()
@@ -77,7 +78,7 @@ export default function KnowledgePage() {
 
   return (
     <div className="max-w-5xl mx-auto p-4 space-y-6">
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <Label htmlFor="filter">Filter by context</Label>
         <Input
           id="filter"
@@ -86,7 +87,13 @@ export default function KnowledgePage() {
           onChange={(e) => setFilter(e.target.value)}
           className="mt-2"
         />
-      </div>
+      </div> */}
+      <SearchBar
+        value={filter}
+        onChange={setFilter}
+        placeholder="Type keyword..."
+        label="Filter by context"
+      />
 
       {filteredData?.data.map((section: any, idx: number) => (
         <div key={idx}>
@@ -105,7 +112,9 @@ export default function KnowledgePage() {
                           href={source.source}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline truncate max-w-xs inline-block"
+                          // className="text-blue-600 hover:underline truncate max-w-xs inline-block"
+                          className="text-blue-500 hover:underline inline-block max-w-full truncate overflow-hidden whitespace-nowrap"
+
                         >
                           {source.source}
                         </a>

@@ -1,116 +1,4 @@
 // // components/GenerateDialog.tsx
-// 'use client'
-
-// import {
-//   Dialog,
-//   DialogTrigger,
-//   DialogContent,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogDescription,
-// } from '@/components/ui/dialog'
-// import { Button } from '@/components/ui/button'
-// import { Rocket } from 'lucide-react'
-// import { useState, useEffect } from 'react'
-// import { generateAPI, GenerateEndpointType } from '@/services/generateService'
-// import { transformGeneratedOutline } from '@/lib/transform/generatedOutlineResponse'
-// import { Block } from "@blocknote/core"
-// import { GenerateBlock } from './GenerateBlock'
-// import { useGenOutlineStore } from '@/hooks/useGenOutlineStore' 
-// import { saveSessionOutline } from '@/services/sessionService'
-// // import { useRouter } from 'next/navigation'
-
-// interface GenerateDialogProps {
-//   session_id: string
-//   endpoint: GenerateEndpointType
-//   prompt: string
-// }
-
-// export function GenerateDialog({
-//   session_id,
-//   endpoint,
-//   prompt,
-// }: GenerateDialogProps) {
-//   // const router = useRouter()
-//   const [result, setResult] = useState<Block[] | null>(null)
-//   const [loading, setLoading] = useState(false)
-//   const [error, setError] = useState<string | null>(null)
-//   const [open, setOpen] = useState(false)
-//   const markdown = useGenOutlineStore((state) => state.markdown)
-
-  
-//   // Run handleGenerate whenever dialog is opened
-//   const handleGenerate = async () => {
-//     console.log("prompt: ", prompt)
-//     setLoading(true)
-//     setError(null)
-//     setResult(null)
-//     try {
-//       const data = await generateAPI({ endpoint, prompt })
-//       const newBlocks = transformGeneratedOutline(data)
-//       setResult(newBlocks)
-//     } catch (err: any) {
-//       setError(err.message || 'Failed to generate')
-//     } finally {
-//       setLoading(false)
-//     }
-//   }
-//   useEffect(() => {
-//     if (open) {
-//       handleGenerate()
-//     }
-//   }, [open])
-//   const handleUseOutline = async () => {
-//     console.log("session_id: ", session_id)
-//     console.log("markdown", markdown)
-//     try {
-//       await saveSessionOutline(session_id as string, {
-//         tone_of_voice: prompt,
-//         outline: markdown,
-//       })
-//       console.log('Update successfully')
-//       // router.push(`/session/${session_id}/outline`)
-//     } catch (err) {
-//       console.error('Update faled:', err)
-//     }    
-//   }
-//   return (
-//     <Dialog open={open} onOpenChange={setOpen}>
-//       <DialogTrigger asChild>
-//         <Button variant="ghost">
-//           <Rocket className="w-4 h-4" />
-//         </Button>
-//       </DialogTrigger>
-
-//       <DialogContent className="w-[30%] max-w-full h-[80%] max-h-full">
-//         <DialogHeader>
-//           <DialogTitle>Generate Options</DialogTitle>
-//           <DialogDescription>
-//             <span>
-//               Run the generation for session <code>{session_id}</code>.
-//             </span>
-//             <span>{prompt}</span>
-//           </DialogDescription>
-//           <div className="flex flex-row justify-between items-center mt-4 w-full">
-//             <Button onClick={handleGenerate} disabled={loading}>
-//               {loading ? 'Generating...' : 'Generate'}
-//             </Button>
-//             <Button onClick={handleUseOutline}>Use this Outline</Button>
-//           </div>
-//         </DialogHeader>
-
-//         <div>
-//           {error && <p className="text-red-500 text-sm">{error}</p>}
-//           {result && (
-//             <GenerateBlock
-//               blocks={result}
-//             />
-//           )}
-//         </div>
-//       </DialogContent>
-//     </Dialog>
-//   )
-// }
 
 'use client'
 
@@ -215,9 +103,9 @@ export function GenerateDialog({
           <DialogTitle>Generate Options</DialogTitle>
           <DialogDescription>
             <span>
-              Run the generation for session <code>{session_id}</code>.
+              Run the generation for session <code>{session_id}</code>. {prompt}
             </span>
-            <span>{prompt}</span>
+            {/* <span>{prompt}</span> */}
           </DialogDescription>
           <div className="flex flex-row justify-end items-center gap-2 mt-4 w-full">
             <Button className="flex-1" onClick={handleGenerate} disabled={loading}>
