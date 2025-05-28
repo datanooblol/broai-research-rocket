@@ -104,7 +104,6 @@ export default function OutlinePage() {
              placeholder="Enter tone of voice..."
              className="w-full"
              />          
-            <div>{tone}</div>
         </div>
         <div className="flex flex-col w-full max-w-full overflow-x-hidden gap-4">
           <div className='flex flex-row justify-between items-center'>

@@ -115,17 +115,17 @@ services:
               capabilities: [gpu]
     runtime: nvidia  # For backward compatibility if needed
 
-  streamlit:
-    <<: *base
-    container_name: streamlit
-    command: >
-      sh -c "uv sync && . .venv/bin/activate && streamlit run frontend.py"
-    ports:
-      - "8501:8501"
-    volumes:
-      - ./frontend:/app
-    environment:
-      - ENDPOINT=http://fastapi:8000
+  # streamlit:
+  #   <<: *base
+  #   container_name: streamlit
+  #   command: >
+  #     sh -c "uv sync && . .venv/bin/activate && streamlit run frontend.py"
+  #   ports:
+  #     - "8501:8501"
+  #   volumes:
+  #     - ./frontend:/app
+  #   environment:
+  #     - ENDPOINT=http://fastapi:8000
       
   celery:
     <<: *base
