@@ -8,11 +8,12 @@ sudo apt update -y
 echo "📦 Installing ubuntu-drivers-common..."
 sudo apt install -y ubuntu-drivers-common
 
-echo "🔍 Detecting available NVIDIA drivers..."
-ubuntu-drivers devices
+# echo "🔍 Detecting available NVIDIA drivers..."
+# ubuntu-drivers devices
 
 echo "🚀 Installing recommended NVIDIA driver (nvidia-driver-535)..."
-sudo apt install -y nvidia-driver-535
+# sudo apt install -y nvidia-driver-535
+sudo ubuntu-drivers autoinstall
 
 echo "🔁 Rebooting to activate the driver..."
 # sudo reboot

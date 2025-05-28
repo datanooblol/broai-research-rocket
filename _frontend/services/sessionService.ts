@@ -81,7 +81,7 @@ export async function saveSessionOutline(session_id: string, data: {
 
 
 export async function fetchKnowledge(session_id: string) {
-  const res = await fetch(`${baseUrl}http://localhost:8000/v1/session/knowledge`, {
+  const res = await fetch(`${baseUrl}/v1/session/knowledge`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
