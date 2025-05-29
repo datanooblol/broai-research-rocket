@@ -26,3 +26,8 @@ AWS_SESSION_TOKEN=
 AWS_DEFAULT_REGION=ap-southeast-1 # your choice
 AWS_BEDROCK_REGION=us-west-2
 ```
+
+```cmd
+# if fetching huggingface failed due to low diskspace during start FastAPI
+rm -rf ~/.cache/huggingface
+```
