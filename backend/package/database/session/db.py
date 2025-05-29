@@ -27,7 +27,7 @@ class SessionDB(BaseDuck):
 
     def add_session(self, session:SessionInfo):
         query = f"""INSERT INTO {self.table} (session_id, user_id, tone_of_voice, outline, step, whitelist, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?);"""
-        _tone_of_voice = "Tone of voice of this research. i.e. \n1) A user-friendly guide for hiking\n2) A manual for writing a python. Return python code block when neccessary."
+        _tone_of_voice = "Tone of voice of this research. i.e. \n1) A user-friendly guide for hiking\n2) A manual for writing a python. Return python code block when necessary."
         _outline = "## Section of your research\n- topic in the section\n- topic in the section"
         rows = [session.session_id, session.user_id, _tone_of_voice, _outline, session.step, [], session.created_at, session.created_at]
         self.execute(query, rows)

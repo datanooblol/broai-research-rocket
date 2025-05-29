@@ -25,10 +25,16 @@ function getFirstTwoParagraphs(markdown: string): string {
   return firstTwo.join('\n\n')
 }
 
+function getCharacterLength(markdown: string, maxChars: number = 1000): string {
+  if (markdown.length <= maxChars) return markdown
+  return markdown.slice(0, maxChars) + '\n\n...'
+}
+
 
 export function BrainCard({ brain_id, username, content, updated_at }: BrainCardProps) {
   const router = useRouter()
-  const preview = getFirstTwoParagraphs(content)
+  // const preview = getFirstTwoParagraphs(content)
+  const preview = getCharacterLength(content, 500)
 
   return (
     <div

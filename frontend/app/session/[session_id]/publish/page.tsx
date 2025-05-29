@@ -2,24 +2,29 @@
 
 'use client'
 
+import { useRef } from "react"
 import "@blocknote/core/fonts/inter.css"
 import { BlockNoteView } from "@blocknote/mantine"
 import "@blocknote/mantine/style.css"
 import { useCreateBlockNote } from "@blocknote/react"
-import { fetchPublishContent, publishBrain } from '@/services/sessionService'
+import { fetchPublishContent, publishBrain, updatePublishContent } from '@/services/sessionService'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Rocket, FilePen, Eye, BrainCircuit } from 'lucide-react'
 import { useAuthStore } from "@/hooks/useAuthStore"
+import debounce from 'lodash/debounce'
+import { blocksToMarkdownString } from "@/lib/blocknote/utils"
 
 export default function PublishPage() {
   const { session_id } = useParams()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [editable, setEditable] = useState(false)
-  const editor = useCreateBlockNote()
   const { user } = useAuthStore()
+
+  const editor = useCreateBlockNote()
+
   useEffect(() => {
     const load = async () => {
       try {
@@ -53,6 +58,22 @@ export default function PublishPage() {
       setError(err.message || 'Failed to publish brain')
     }
   }
+  const debouncedSave = useRef(
+    debounce(async () => {
+      const publish = blocksToMarkdownString(editor.document)
+      try {
+        await updatePublishContent(session_id as string, publish as string)
+        console.log('Auto-saved')
+      } catch (err) {
+        console.error('Auto-save failed: ', err)
+      }
+    }, 1500)
+  ).current
+  const handleEditorChange = () => {
+    if (!loading) {
+      debouncedSave()
+    }
+  }
   
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -68,7 +89,7 @@ export default function PublishPage() {
           <Rocket className="w-4 h-4" />
         </Button>
       </div>
-      <BlockNoteView editor={editor} editable={editable} />
+      <BlockNoteView editor={editor} editable={editable}  onChange={handleEditorChange}/>
     </div>
     // </div>
   )

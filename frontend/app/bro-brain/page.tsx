@@ -61,24 +61,4 @@ export default function BroBrainPage() {
       </div>
     </div>
   )
-  // return (
-  //   <div>
-  //     <SearchBar
-  //       value={filter}
-  //       onChange={setFilter}
-  //       placeholder="Search brains..."
-  //       label="Filter by username or content"
-  //     />
-
-  //     {filteredBrains.map((brain) => (
-  //       <BrainCard
-  //         key={brain.brain_id}
-  //         brain_id={brain.session_id}
-  //         username={brain.username}
-  //         content={brain.content}
-  //         updated_at={brain.updated_at}
-  //       />
-  //     ))}
-  //   </div>
-  // )
 }

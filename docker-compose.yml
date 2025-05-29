@@ -115,18 +115,6 @@ services:
               capabilities: [gpu]
     runtime: nvidia  # For backward compatibility if needed
 
-  # streamlit:
-  #   <<: *base
-  #   container_name: streamlit
-  #   command: >
-  #     sh -c "uv sync && . .venv/bin/activate && streamlit run frontend.py"
-  #   ports:
-  #     - "8501:8501"
-  #   volumes:
-  #     - ./frontend:/app
-  #   environment:
-  #     - ENDPOINT=http://fastapi:8000
-      
   celery:
     <<: *base
     container_name: celery
@@ -170,7 +158,7 @@ services:
     ports:
       - "3000:3000"  # Expose port 3000 on the container and map it to port 3000 on the host
     volumes:
-      - ./_frontend:/app  # Mount the current directory (your app files) to the /app directory inside the container
+      - ./frontend:/app  # Mount the current directory (your app files) to the /app directory inside the container
     networks:
       - appnet    
     environment:

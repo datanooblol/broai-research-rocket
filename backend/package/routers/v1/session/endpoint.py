@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from package.database.session.model import (
-    SessionInfo, SessionToneOut, SessionParsedOutline, SessionRetrieve, SessionWhitelist
+    SessionInfo, SessionToneOut, SessionParsedOutline, SessionRetrieve, SessionWhitelist, SessionPublish
 )
 from package.database.brain.model import BrainRecord
 from package.utils.parse_outline import parse_outline
@@ -209,3 +209,11 @@ async def publish_content(
     brain = BrainRecord(user_id=session.user_id, username=session.username, session_id=session.session_id, content=content)
     brainDB.publish_content(brain)
     return {"response": "content published successfully"}
+
+@router.put("/publish/manual-update")
+async def manual_update_publish(
+    session: SessionPublish,
+    sessionDB=Depends(get_SessionDB)
+):
+    _ = sessionDB.update_publish(session)
+    return {"response": "publish content updated successfully"}

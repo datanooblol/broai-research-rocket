@@ -11,7 +11,10 @@ from dotenv import load_dotenv
 load_dotenv()  # take environment variables
 baai_em = BAAIEmbedding()
 reranker = ReRanker()
-
+knowledge_DB = DuckVectorStore(
+            db_name=os.getenv("DB_NAME"),
+            table="knowledge",
+            embedding=baai_em)
 
 def get_UserDB():
     try:
@@ -43,11 +46,12 @@ def get_BrainDB():
 
 def get_KnowledgeDB():
     try:
-        yield DuckVectorStore(
-            db_name=os.getenv("DB_NAME"),
-            table="knowledge",
-            embedding=baai_em
-        )
+        yield knowledge_DB
+        # yield DuckVectorStore(
+        #     db_name=os.getenv("DB_NAME"),
+        #     table="knowledge",
+        #     embedding=baai_em
+        # )
     finally:
         pass
 

@@ -212,3 +212,19 @@ export async function updateWhitelist(
   const data = await response.json()
   return data.response || 'Unknown response'
 }
+
+export async function updatePublishContent(session_id: string, publish: string) {
+  const response = await fetch(`${baseUrl}/v1/session/publish/manual-update`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ session_id: session_id, publish: publish })
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to update publish content: ${response.statusText}`)
+  }
+
+  const data = await response.json()
+  return data.response || 'Unknown response'
+}
